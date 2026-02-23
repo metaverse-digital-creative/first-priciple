@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MECHA-DASH — Robot Deployment Command Center. Robots go to work. Boss makes money. 機器人出去上班 · 替老闆賺錢">
+  <title>MECHA-DASH — 機器人出去上班 · 替老闆賺錢</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-brand">
+        <h1>⚡ MECHA-DASH</h1>
+        <div class="tagline">機器人出去上班 · 替老闆賺錢 — ROBOT DEPLOYMENT COMMAND CENTER</div>
+      </div>
+      <div class="header-stats">
+        <div class="header-stat">
+          <div class="stat-value" id="stat-revenue" data-prefix="$">$0</div>
+          <div class="stat-label">MECHA-OS Revenue</div>
+        </div>
+        <div class="header-stat">
+          <div class="stat-value" id="stat-robots">0</div>
+          <div class="stat-label">Active Robots</div>
+        </div>
+        <div class="header-stat">
+          <div class="stat-value" id="stat-deploys">0</div>
+          <div class="stat-label">Deployments</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="deploy">
+        <span class="tab-icon">🚀</span>
+        <span class="tab-label">Deploy</span>
+      </button>
+      <button class="tab-btn" data-tab="earn">
+        <span class="tab-icon">💰</span>
+        <span class="tab-label">Earn</span>
+      </button>
+      <button class="tab-btn" data-tab="engage">
+        <span class="tab-icon">🎯</span>
+        <span class="tab-label">Engage</span>
+      </button>
+      <button class="tab-btn" data-tab="compound">
+        <span class="tab-icon">🧬</span>
+        <span class="tab-label">Compound</span>
+      </button>
+      <button class="tab-btn" data-tab="pitch">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Pitch</span>
+      </button>
+    </nav>
+
+    <!-- ============== PANEL 1: DEPLOY ============== -->
+    <section class="panel active" id="panel-deploy">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">New Deployment</span>
+          <span class="card-badge badge-cyan">5-STEP WIZARD</span>
+        </div>
+
+        <div id="deploy-wizard" class="wizard">
+          <!-- Progress -->
+          <div class="wizard-progress">
+            <div class="wizard-step-indicator active"></div>
+            <div class="wizard-step-indicator"></div>
+            <div class="wizard-step-indicator"></div>
+            <div class="wizard-step-indicator"></div>
+            <div class="wizard-step-indicator"></div>
+          </div>
+
+          <!-- Step 1: Factory Info -->
+          <div class="wizard-step active">
+            <div class="wizard-step-title">Step 1 — Factory Information</div>
+            <div class="wizard-step-desc">Who is the boss? Where is the factory?</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="f-name">Factory Name</label>
+                <input class="form-input" id="f-name" type="text" placeholder="e.g. 陳先生的焊接工廠">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="f-location">Location</label>
+                <input class="form-input" id="f-location" type="text" placeholder="e.g. 台中, 海防市">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="f-type">Factory Type</label>
+                <select class="form-select" id="f-type">
+                  <option value="metalwork">🔩 Metalwork / CNC</option>
+                  <option value="automotive">🚗 Automotive</option>
+                  <option value="electronics">⚡ Electronics</option>
+                  <option value="logistics">📦 Logistics</option>
+                  <option value="food">🍜 Food Processing</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="f-workers">Current Workers</label>
+                <input class="form-input" id="f-workers" type="number" placeholder="50" value="50">
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Robot Config -->
+          <div class="wizard-step">
+            <div class="wizard-step-title">Step 2 — Robot Configuration</div>
+            <div class="wizard-step-desc">How many robots? What model?</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="r-count">Number of Robots</label>
+                <input class="form-input" id="r-count" type="number" placeholder="5" value="5">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="r-model">Robot Model</label>
+                <select class="form-select" id="r-model">
+                  <option value="Unitree G1">Unitree G1 (Humanoid)</option>
+                  <option value="Unitree H1">Unitree H1 (Heavy)</option>
+                  <option value="Delta Cobot">Delta Collaborative Robot</option>
+                  <option value="Custom">Custom / Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Work Station -->
+          <div class="wizard-step">
+            <div class="wizard-step-title">Step 3 — Target Work Station</div>
+            <div class="wizard-step-desc">Start with the simplest station. Never the most complex. (Principle T1.4)</div>
+            <div class="form-group">
+              <label class="form-label" for="r-station">Primary Work Station</label>
+              <select class="form-select" id="r-station">
+                <option value="Welding">🔥 Welding</option>
+                <option value="Assembly">🔧 Assembly</option>
+                <option value="Packaging">📦 Packaging</option>
+                <option value="Quality Inspection">🔍 Quality Inspection</option>
+                <option value="Material Handling">🏗️ Material Handling</option>
+                <option value="Picking">📋 Picking / Sorting</option>
+              </select>
+            </div>
+            <div class="principle-item" style="margin-top:12px">
+              <span class="principle-num">T1.4</span>Always start with the simplest work station — never the most complex.
+            </div>
+          </div>
+
+          <!-- Step 4: Revenue Target -->
+          <div class="wizard-step">
+            <div class="wizard-step-title">Step 4 — Revenue Configuration</div>
+            <div class="wizard-step-desc">Robot earns money for the boss. We take 30%.</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="r-daily">Daily Rate per Robot ($)</label>
+                <input class="form-input" id="r-daily" type="number" placeholder="200" value="200">
+              </div>
+              <div class="form-group">
+                <label class="form-label">MECHA-OS Cut</label>
+                <input class="form-input" type="text" value="30% (fixed)" disabled style="opacity:0.6">
+              </div>
+            </div>
+            <div class="metrics-grid" style="margin-top:16px">
+              <div class="metric-tile metric-amber">
+                <div class="metric-label">Daily Gross (5 robots)</div>
+                <div class="metric-value" style="font-size:1.5rem">$1,000</div>
+              </div>
+              <div class="metric-tile metric-green">
+                <div class="metric-label">Boss Takes (70%)</div>
+                <div class="metric-value" style="font-size:1.5rem">$700</div>
+              </div>
+              <div class="metric-tile metric-cyan">
+                <div class="metric-label">MECHA-OS (30%)</div>
+                <div class="metric-value" style="font-size:1.5rem">$300</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5: Triggers -->
+          <div class="wizard-step">
+            <div class="wizard-step-title">Step 5 — Data Triggers</div>
+            <div class="wizard-step-desc">Features unlock when data says so — not when the calendar says so. (seed_s29)</div>
+            <div class="form-group">
+              <label class="form-label">Trigger 1: First Data Collection</label>
+              <div class="principle-item">
+                <span class="principle-num">T1.5</span>Data collection starts Day 0, even if robots aren't online yet.
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trigger 2: First Revenue Signal</label>
+              <div class="principle-item">
+                <span class="principle-num">RaaW</span>Boss sees money before seeing intelligence. Revenue first.
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trigger 3: First Desire Cue</label>
+              <div class="principle-item">
+                <span class="principle-num">D3</span>Anticipation > Delivery. Plant a 3-Beat Pattern after Week 1.
+              </div>
+            </div>
+          </div>
+
+          <!-- Nav -->
+          <div class="wizard-nav">
+            <button class="btn btn-secondary" id="wizard-prev" style="visibility:hidden">← Back</button>
+            <button class="btn btn-primary" id="wizard-next">Next →</button>
+            <button class="btn btn-amber" id="wizard-submit" style="display:none">🚀 Deploy Factory</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Existing Deployments -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Active Deployments</span>
+          <span class="card-badge badge-green" id="deploy-count-badge">0 ACTIVE</span>
+        </div>
+        <div id="deploy-list" class="deploy-list">
+          <div class="empty-state">
+            <div class="empty-icon">🏭</div>
+            <h3>No deployments yet</h3>
+            <p>Complete the wizard above to deploy your first factory.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== PANEL 2: EARN ============== -->
+    <section class="panel" id="panel-earn">
+      <div class="metrics-grid">
+        <div class="metric-tile metric-amber">
+          <div class="metric-label">Total Gross Revenue</div>
+          <div class="metric-value" id="earn-gross" data-prefix="$">$0</div>
+          <div class="metric-sub">All robots combined</div>
+        </div>
+        <div class="metric-tile metric-cyan">
+          <div class="metric-label">MECHA-OS Revenue (30%)</div>
+          <div class="metric-value" id="earn-mecha" data-prefix="$">$0</div>
+          <div class="metric-sub">Your recurring cut</div>
+        </div>
+        <div class="metric-tile metric-green">
+          <div class="metric-label">Boss Take (70%)</div>
+          <div class="metric-value" id="earn-boss" data-prefix="$">$0</div>
+          <div class="metric-sub">Boss keeps the majority</div>
+        </div>
+        <div class="metric-tile metric-purple">
+          <div class="metric-label">Active Robot Fleet</div>
+          <div class="metric-value" id="earn-robots">0</div>
+          <div class="metric-sub">Working robots across all factories</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Earnings by Factory</span>
+          <span class="card-badge badge-amber">LIVE</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border)">
+                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Factory</th>
+                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Robots</th>
+                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Days</th>
+                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Gross</th>
+                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Your Cut</th>
+                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Boss Take</th>
+              </tr>
+            </thead>
+            <tbody id="earn-table-body">
+              <tr>
+                <td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Deploy your first factory to see earnings</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Revenue Formula</span>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:0.9rem;line-height:2;color:var(--text-secondary)">
+          <div><span style="color:var(--amber)">Gross</span> = Robots × $200/day × Days Active</div>
+          <div><span style="color:var(--cyan)">MECHA-OS</span> = Gross × <span style="color:var(--cyan)">30%</span></div>
+          <div><span style="color:var(--green)">Boss Take</span> = Gross × <span style="color:var(--green)">70%</span></div>
+          <div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted)">→ Boss sees money first. Trust compounds. Dependency grows.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== PANEL 3: ENGAGE ============== -->
+    <section class="panel" id="panel-engage">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Desire Engine — Boss Engagement Loop</span>
+          <span class="card-badge badge-purple">D1-D5 ACTIVE</span>
+        </div>
+        <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;line-height:1.6">
+          <strong style="color:var(--text-secondary)">Dopamine ≠ pleasure. Dopamine = anticipation of pleasure.</strong><br>
+          The peak spike happens BEFORE the reward, not during it. Keep the boss wanting.
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+          <span class="card-badge badge-cyan">D1: Never Satisfy Fully</span>
+          <span class="card-badge badge-amber">D2: Variable Reward</span>
+          <span class="card-badge badge-green">D3: Anticipation > Delivery</span>
+          <span class="card-badge badge-purple">D4: Progress Bars Never Finish</span>
+          <span class="card-badge badge-red">D5: Engineered Luck</span>
+        </div>
+      </div>
+
+      <div id="engage-list">
+        <div class="empty-state">
+          <div class="empty-icon">🎯</div>
+          <h3>No deployments yet</h3>
+          <p>Deploy your first factory to start the Desire Engine.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== PANEL 4: COMPOUND ============== -->
+    <section class="panel" id="panel-compound">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Seed Quality Curve</span>
+          <span class="card-badge badge-cyan">0.35 → 0.98</span>
+        </div>
+        <div class="seed-curve">
+          <canvas id="seed-canvas"></canvas>
+        </div>
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">
+          Each deployment is a seed. Quality compounds per harvest. After ~15 deployments, the system generates its own hypotheses.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Tier 1 — Universal Deployment Principles</span>
+          <span class="card-badge badge-green">ALL FACTORIES</span>
+        </div>
+        <div id="principles-list" class="principles-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Tier 2 — Factory-Type Thinking Questions</span>
+          <span class="card-badge badge-purple">ADAPTIVE</span>
+        </div>
+        <div id="tier2-questions"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Harvested Lessons</span>
+          <span class="card-badge badge-amber">VERSIONED</span>
+        </div>
+        <div id="lessons-list"></div>
+      </div>
+    </section>
+
+    <!-- ============== PANEL 5: PITCH ============== -->
+    <section class="panel" id="panel-pitch">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Proposal Generator</span>
+          <span class="card-badge badge-amber">LIVE PREVIEW</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="pitch-factory">Factory Name</label>
+            <input class="form-input" id="pitch-factory" type="text" placeholder="陳先生的工廠" value="陳先生's Welding Factory">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pitch-robots">Robot Count</label>
+            <input class="form-input" id="pitch-robots" type="number" placeholder="10" value="10">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pitch-station">Target Work Station</label>
+          <select class="form-select" id="pitch-station">
+            <option value="Welding">🔥 Welding</option>
+            <option value="Assembly">🔧 Assembly</option>
+            <option value="Packaging">📦 Packaging</option>
+            <option value="Quality Inspection">🔍 Quality Inspection</option>
+            <option value="Material Handling">🏗️ Material Handling</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="pitch-output"></div>
+    </section>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
