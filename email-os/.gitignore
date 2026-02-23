@@ -1,0 +1,5 @@
+node_modules/
+.tokens/
+.env
+data/seeds.json
+data/insights.json

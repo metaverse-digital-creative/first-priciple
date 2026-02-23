@@ -1,0 +1,112 @@
+{
+    "version": "1.0.0",
+    "name": "Email OS",
+    "oneLiner": "Every inbox is a signal field. Most people scroll. We harvest.",
+    "gmail": {
+        "scopes": [
+            "https://www.googleapis.com/auth/gmail.readonly",
+            "https://www.googleapis.com/auth/gmail.modify",
+            "https://www.googleapis.com/auth/gmail.send"
+        ],
+        "maxResults": 50,
+        "syncIntervalMs": 60000,
+        "tokenPath": ".tokens/gmail.json"
+    },
+    "zones": {
+        "red": {
+            "label": "🔴 Immediate",
+            "description": "Requires action within 2 hours",
+            "triggers": [
+                "decision-needed",
+                "deadline",
+                "escalation",
+                "vip-sender"
+            ],
+            "responseWindow": "2h"
+        },
+        "yellow": {
+            "label": "🟡 Today",
+            "description": "Important but not urgent — handle today",
+            "triggers": [
+                "follow-up",
+                "question",
+                "opportunity",
+                "meeting"
+            ],
+            "responseWindow": "24h"
+        },
+        "green": {
+            "label": "🟢 Queue",
+            "description": "Low urgency — batch process weekly",
+            "triggers": [
+                "newsletter",
+                "notification",
+                "fyi",
+                "archive"
+            ],
+            "responseWindow": "7d"
+        }
+    },
+    "seeds": {
+        "types": [
+            "opportunity",
+            "follow-up",
+            "decision-needed",
+            "relationship-build"
+        ],
+        "shelfLife": {
+            "opportunity": "7d",
+            "follow-up": "3d",
+            "decision-needed": "24h",
+            "relationship-build": "30d"
+        },
+        "escalation": {
+            "enabled": true,
+            "checkIntervalMs": 3600000,
+            "escalateToZone": "red"
+        }
+    },
+    "threads": {
+        "velocityWindow": "7d",
+        "temperatureDecay": 0.1,
+        "forecastHorizon": "3d"
+    },
+    "agents": {
+        "ingest": {
+            "enabled": true,
+            "batchSize": 50
+        },
+        "classify": {
+            "enabled": true,
+            "confidenceThreshold": 0.7
+        },
+        "seed": {
+            "enabled": true,
+            "autoPlant": true
+        },
+        "suggest": {
+            "enabled": true,
+            "maxSuggestions": 3
+        },
+        "insight": {
+            "enabled": true,
+            "minThreads": 3
+        },
+        "mirror": {
+            "enabled": true,
+            "reviewCycle": 10
+        }
+    },
+    "bus": {
+        "messageFormat": "{ source, event, payload, timestamp }",
+        "retainEvents": 1000
+    },
+    "digest": {
+        "schedule": "daily",
+        "includeZones": [
+            "red",
+            "yellow"
+        ],
+        "threadLimit": 10
+    }
+}

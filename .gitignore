@@ -9,5 +9,14 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Node
+node_modules/
+
+# Secrets
+.env
+*.pem
+token.json
+credentials.json
+
 # Logs
 *.log

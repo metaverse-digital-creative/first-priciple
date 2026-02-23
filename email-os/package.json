@@ -1,0 +1,34 @@
+{
+    "name": "email-os",
+    "version": "1.0.0",
+    "description": "Intelligence-driven email automation — 6-agent system on an Insight Bus",
+    "type": "module",
+    "main": "src/index.js",
+    "bin": {
+        "email-os": "./src/index.js"
+    },
+    "scripts": {
+        "start": "node src/index.js",
+        "sync": "node src/index.js --sync",
+        "triage": "node src/index.js --triage",
+        "digest": "node src/index.js --digest",
+        "auth": "node src/gmail/auth.js",
+        "test": "node --test src/**/*.test.js"
+    },
+    "dependencies": {
+        "googleapis": "^130.0.0"
+    },
+    "devDependencies": {},
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "keywords": [
+        "email",
+        "automation",
+        "gmail",
+        "ai",
+        "agent",
+        "insight-bus"
+    ],
+    "license": "MIT"
+}
