@@ -55,7 +55,8 @@ class SeedAgent {
 
         if (signals.some(s => s.type === 'urgency' && s.level === 'high')) return 'decision-needed';
         if (signals.some(s => s.type === 'vip-sender') ||
-            ['opportunity', 'proposal', 'partnership', 'collaboration', 'interested', 'offer'].some(k => text.includes(k))) return 'opportunity';
+            ['opportunity', 'proposal', 'partnership', 'collaboration', 'interested', 'offer',
+                'rfq', 'quotation', 'inquiry', 'enquiry', 'quote', '報價', '詢價', '見積'].some(k => text.includes(k))) return 'opportunity';
         if (email.inReplyTo || signals.some(s => s.type === 'urgency' && s.level === 'medium')) return 'follow-up';
         if (signals.some(s => s.type === 'frequent-sender') && classification.zone !== 'green') return 'relationship-build';
         if (classification.zone === 'red') return 'follow-up';

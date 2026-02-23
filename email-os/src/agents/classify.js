@@ -58,7 +58,10 @@ const URGENCY_SIGNALS = {
 const ACTION_REQUIRED = [
     '簽核', '需要簽核', 'action required', 'approve', 'approval needed',
     '屆期', 'expire', 'expir',
-    '安全性快訊', 'security alert'
+    '安全性快訊', 'security alert',
+    // RFQ / Quotation — revenue opportunities
+    'rfq', 'request for quot', 'quotation', 'inquiry', 'enquiry',
+    '報價', '詢價', '見積', '請報價', 'quote request'
 ];
 
 // ─── NEGATIVE SIGNALS (push DOWN) ──────────────────────────
