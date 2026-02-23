@@ -30,23 +30,38 @@ ROI math: If MECHA saves 1 RFQ/month = ~NT$1.2M revenue. At $299/mo, that's stil
 ### Feature Ladder
 
 ```
-Phase 1:   Free inbox health score                    ← SHIPPED
-Phase 2:   RFQ blurred notifications                  ← BUILDING (signal: 京茂 ran 4 rounds of RFQ analysis)
+Phase 0:   Chrome Extension (Gmail RFQ scanner)       ← NEXT BUILD — distribution layer
+Phase 1:   Inbox Health Score (Dashboard)             ← SHIPPED — deep analysis
+Phase 2:   RFQ blurred notifications (Extension)      ← upsell trigger in Gmail
 Phase 10:  Full audit + quarterly business review     ← $299/mo ceiling
 
 Phase 3-9: We don't know yet. Users tell us.
 ```
 
+**Architecture:**
+- Extension = distribution (free, Chrome Web Store, zero friction)
+- Dashboard = monetization (deep analysis, Pro upsell)
+- Extension detects → Dashboard analyzes → Pro unlocks
+
 **We do NOT pre-plan features.** Every feature ships only when a real user's real behavior signals they need it. This is conversation-driven development.
 
-### Phase 2: RFQ Blurred Notifications
+### Phase 0: Chrome Extension — Gmail RFQ Scanner
+
+**Why Phase 0:** Extension solves the #1 bottleneck (getting user data into system) without OAuth, without backend, without manual paste. Data stays on user's machine = trust.
+
+**How it works:**
+1. Extension reads Gmail DOM (client-side, no data leaves browser)
+2. Classifies emails using same patterns as inbox-health.js (RFQ, compliance, client, noise)
+3. Badge icon shows: 🔴 "3" (unread RFQs detected)
+4. Popup shows blurred list:
+   - Free: "RFQ detected from ███████ — NT$ ████████"
+   - Pro: full sender, subject, value estimate, response deadline, draft reply
+
+**Distribution:** Chrome Web Store. Keywords: "Gmail RFQ", "inbox health", "email audit", "報價偵測"
+
+### Phase 2: RFQ Blurred Notifications (in Extension)
 
 **Signal:** 京茂機電 ran 4 consecutive RFQ analysis rounds, asked for SOP, asked for automation. RFQ = their biggest pain point.
-
-**What it does:**
-- Email-OS scans inbox → detects RFQ patterns
-- Free users see: blurred sender, blurred subject, estimated value hidden → "🔓 Unlock with Pro"
-- Pro users see: full sender, subject, estimated value, response deadline, similar past RFQs, draft reply button
 
 **Why it works for both sides:**
 | Their win | Our win |
@@ -58,7 +73,7 @@ Phase 3-9: We don't know yet. Users tell us.
 
 **Key design:** Free version tells you "there IS an RFQ" but not "from WHO." You know the money is there but can't see it. $9/mo unlocks everything.
 
-**Technical:** inbox-health.js already has RFQ classification patterns. Add blurred notification rendering layer.
+**Privacy advantage:** All classification runs client-side. We never see their emails. Only the unlock check hits our server.
 
 ## Development Methodology
 
@@ -117,18 +132,24 @@ Price:     If it creates real value → charge for it
 ## Funnel
 
 ```
-MECHA-DASH (clone repo, open index.html)
+Chrome Web Store → 搜 "Gmail RFQ" / "inbox health"
   ↓
-📧 Inbox Health Check (free, paste email subjects)
+🔌 Install Extension (free, 1 click)
   ↓
-Score: 32/100 + "NT$7.2M at risk" (anxiety = conversion)
+Open Gmail → Extension auto-scans → 🔴 badge "3 RFQ detected"
   ↓
-Blurred details → "Unlock full analysis — $9/mo"
+Click → Blurred: ███@████.com | RFQ_███ | NT$ ████████
   ↓
-Pricing page → Telegram bot → Human closes
+"Unlock full details" → Dashboard (inbox health score + full analysis)
   ↓
-Pro user → Use → Signal → Build next feature
+Score: 32/100 + "NT$7.2M at risk"
+  ↓
+Pricing page → $9/mo Early Adopter → Telegram bot closes
+  ↓
+Pro user → Full RFQ visibility + weekly monitoring
 ```
+
+**Phase 0 (Extension) = distribution. Phase 1 (Dashboard) = monetization.**
 
 ## Tech Stack
 
