@@ -31,12 +31,34 @@ ROI math: If MECHA saves 1 RFQ/month = ~NT$1.2M revenue. At $299/mo, that's stil
 
 ```
 Phase 1:   Free inbox health score                    ← SHIPPED
+Phase 2:   RFQ blurred notifications                  ← BUILDING (signal: 京茂 ran 4 rounds of RFQ analysis)
 Phase 10:  Full audit + quarterly business review     ← $299/mo ceiling
 
-Phase 2-9: We don't know yet. Users tell us.
+Phase 3-9: We don't know yet. Users tell us.
 ```
 
 **We do NOT pre-plan features.** Every feature ships only when a real user's real behavior signals they need it. This is conversation-driven development.
+
+### Phase 2: RFQ Blurred Notifications
+
+**Signal:** 京茂機電 ran 4 consecutive RFQ analysis rounds, asked for SOP, asked for automation. RFQ = their biggest pain point.
+
+**What it does:**
+- Email-OS scans inbox → detects RFQ patterns
+- Free users see: blurred sender, blurred subject, estimated value hidden → "🔓 Unlock with Pro"
+- Pro users see: full sender, subject, estimated value, response deadline, similar past RFQs, draft reply button
+
+**Why it works for both sides:**
+| Their win | Our win |
+|-----------|---------|
+| Never miss an RFQ again | Every RFQ = a payment trigger |
+| Know which RFQ is most valuable | Blurred notification = max loss aversion |
+| Faster response time | Dependency deepens daily |
+| See missed revenue | "You missed NT$3.6M this month" = renewal reason |
+
+**Key design:** Free version tells you "there IS an RFQ" but not "from WHO." You know the money is there but can't see it. $9/mo unlocks everything.
+
+**Technical:** inbox-health.js already has RFQ classification patterns. Add blurred notification rendering layer.
 
 ## Development Methodology
 
