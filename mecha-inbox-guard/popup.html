@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=400">
+    <title>MECHA Inbox Guard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="mecha-popup">
+        <!-- Header -->
+        <header class="mecha-header">
+            <div class="mecha-logo">
+                <span class="logo-icon">⚡</span>
+                <div class="logo-text">
+                    <h1>MECHA Inbox Guard</h1>
+                    <p class="tagline">你的收件匣裡藏著多少報價單？</p>
+                </div>
+            </div>
+            <div class="scan-status" id="scanStatus">
+                <span class="status-dot"></span>
+                <span class="status-text">Scanning...</span>
+            </div>
+        </header>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="statsBar">
+            <div class="stat stat-red">
+                <span class="stat-count" id="redCount">0</span>
+                <span class="stat-label">🔴 Critical</span>
+            </div>
+            <div class="stat stat-yellow">
+                <span class="stat-count" id="yellowCount">0</span>
+                <span class="stat-label">🟡 Action</span>
+            </div>
+            <div class="stat stat-green">
+                <span class="stat-count" id="greenCount">0</span>
+                <span class="stat-label">🟢 OK</span>
+            </div>
+            <div class="stat stat-value">
+                <span class="stat-count" id="totalValue">$0</span>
+                <span class="stat-label">💰 At Risk</span>
+            </div>
+        </div>
+
+        <!-- Alert List -->
+        <div class="alert-list" id="alertList">
+            <div class="loading-state" id="loadingState">
+                <div class="spinner"></div>
+                <p>Open Gmail to start scanning...</p>
+            </div>
+        </div>
+
+        <!-- Pro Upsell Banner -->
+        <div class="pro-banner" id="proBanner">
+            <div class="pro-blur-overlay">
+                <span class="lock-icon">🔓</span>
+                <p>See full sender names, values & draft replies</p>
+                <button class="pro-btn" id="proBtn">Unlock Pro — $9/mo</button>
+                <p class="pro-note">Early adopter price — locked forever</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mecha-footer">
+            <a href="#" id="dashboardLink" class="footer-link">📊 Full Dashboard Analysis</a>
+            <span class="footer-sep">·</span>
+            <a href="#" id="settingsLink" class="footer-link">⚙️ Settings</a>
+            <span class="footer-sep">·</span>
+            <span class="footer-version">v1.0.0</span>
+        </footer>
+
+        <!-- Settings Panel (hidden by default) -->
+        <div class="settings-panel" id="settingsPanel" style="display:none;">
+            <h3>Settings</h3>
+            <div class="setting-row">
+                <label>Pro API Key</label>
+                <input type="text" id="proKeyInput" placeholder="Enter your API key">
+                <button id="saveKeyBtn" class="save-key-btn">Save</button>
+            </div>
+            <div class="setting-row">
+                <label>Scan interval</label>
+                <select id="scanInterval">
+                    <option value="30000">30 seconds</option>
+                    <option value="60000">1 minute</option>
+                    <option value="300000">5 minutes</option>
+                </select>
+            </div>
+            <button id="closeSettings" class="close-settings">← Back</button>
+        </div>
+    </div>
+
+    <script src="classifier.js"></script>
+    <script src="popup.js"></script>
+</body>
+
+</html>
