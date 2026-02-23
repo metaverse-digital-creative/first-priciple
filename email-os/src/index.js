@@ -104,7 +104,7 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
         // 2. Classify
         stateMachine.transition(STATES.PROCESSING);
         console.log('🏷️  Classifying by zone...\n');
-        const classified = classify.batchClassify(emails);
+        const classified = await classify.batchClassify(emails);
 
         // Print zone summary
         const zoneEmoji = { red: '🔴', yellow: '🟡', green: '🟢' };
@@ -131,7 +131,7 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
 
         for (const { email, classification } of allClassified) {
             // Seed
-            const planted = seed.evaluate(email, classification);
+            const planted = await seed.evaluate(email, classification);
 
             // Thread intelligence
             insight.trackThread(email, classification);
@@ -150,7 +150,8 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
 
         // 4. Mirror review
         console.log('\n🪞 Mirror review...');
-        const review = mirror.reviewClassifications(classify.getLog());
+        const classifyLog = await classify.getLog();
+        const review = await mirror.reviewClassifications(classifyLog);
         if (review.feedback.length > 0) {
             for (const fb of review.feedback) {
                 console.log(`   ❓ ${fb.message}`);
@@ -188,7 +189,7 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
 async function runTriage(ingest, classify) {
     console.log('🏷️  Quick triage — classifying unread...\n');
     const emails = await ingest.run({ query: 'is:inbox is:unread', maxResults: 20 });
-    const classified = classify.batchClassify(emails);
+    const classified = await classify.batchClassify(emails);
 
     const zoneEmoji = { red: '🔴', yellow: '🟡', green: '🟢' };
     for (const [zone, items] of Object.entries(classified)) {

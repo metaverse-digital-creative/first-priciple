@@ -40,13 +40,13 @@ class SeedAgent {
     /**
      * Analyze a classified email and decide whether to plant a seed
      */
-    evaluate(email, classification) {
+    async evaluate(email, classification) {
         if (classification.zone === 'green' && classification.confidence > 0.7) {
             return null;
         }
         const seedType = this.detectSeedType(email, classification);
         if (!seedType) return null;
-        return this.plant(email, seedType, classification);
+        return await this.plant(email, seedType, classification);
     }
 
     detectSeedType(email, classification) {
