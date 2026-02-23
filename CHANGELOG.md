@@ -9,6 +9,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 > - MINOR → new features (new panel, new data source)
 > - PATCH → bug fixes, copy tweaks, styling polish
 
+## [1.2.0] — 2026-02-23
+
+### Added
+- **Seed data auto-load** — 5 realistic Taiwanese factory deployments populate on first visit
+- **Email-OS bridge** — email intelligence signals surface in Engage and Compound panels
+- **Toast notifications** — glassmorphic toasts for deployment, engagement, and copy actions
+- **Pitch export** — copy proposal to clipboard with one click
+- **Entrance animations** — staggered card slide-up, metric pop-in, deploy item fade-in
+- **Status indicator** — pulsing green dot on MECHA-OS Revenue label
+- **Table hover states** — row highlight on earnings table
+- **Value pulse effect** — glow animation when live values update
+- **LLM provider module** (`email-os/src/llm.js`) — Gemini + OpenAI via native fetch
+
+### Changed
+- `UI.init()` now async — loads seed data and email bridge before render
+- `Store.loadSeedData()` fetches from `data/deployments.json` when localStorage empty
+- Engage actions (Advance Stage, Plant Loop, Touch) now emit toast feedback
+- Deploy badge counter dynamically updates
+
 ## [1.1.0] — 2026-02-23
 
 ### Added

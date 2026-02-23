@@ -1,6 +1,89 @@
 {
-    "version": "1.0.0",
-    "avgQuality": 0.35,
-    "totalHarvested": 0,
-    "seeds": []
+    "version": "1.2.0",
+    "avgQuality": 0.524,
+    "totalHarvested": 2,
+    "seeds": [
+        {
+            "id": "s001",
+            "deploymentId": "d001",
+            "type": "hypothesis",
+            "quality": 0.72,
+            "status": "harvested",
+            "plantedAt": "2025-12-15T08:00:00.000Z",
+            "harvestedAt": "2026-01-10T14:30:00.000Z",
+            "insights": [
+                "Welding station efficiency increased 18% after robot deployment",
+                "Workers adapted faster than projected — 3 days vs 7 day estimate"
+            ]
+        },
+        {
+            "id": "s002",
+            "deploymentId": "d001",
+            "type": "experiment",
+            "quality": 0.65,
+            "status": "harvested",
+            "plantedAt": "2026-01-10T14:30:00.000Z",
+            "harvestedAt": "2026-02-05T09:00:00.000Z",
+            "insights": [
+                "Night shift robot operation reduces power costs by 12%"
+            ]
+        },
+        {
+            "id": "s003",
+            "deploymentId": "d001",
+            "type": "probe",
+            "quality": 0.48,
+            "status": "planted",
+            "plantedAt": "2026-02-05T09:00:00.000Z",
+            "insights": []
+        },
+        {
+            "id": "s004",
+            "deploymentId": "d002",
+            "type": "hypothesis",
+            "quality": 0.58,
+            "status": "harvested",
+            "plantedAt": "2026-01-05T09:00:00.000Z",
+            "harvestedAt": "2026-01-28T11:00:00.000Z",
+            "insights": [
+                "陳先生 saw ROI within 2 weeks — requested 3 more robots"
+            ]
+        },
+        {
+            "id": "s005",
+            "deploymentId": "d002",
+            "type": "idea",
+            "quality": 0.42,
+            "status": "planted",
+            "plantedAt": "2026-01-28T11:00:00.000Z",
+            "insights": []
+        },
+        {
+            "id": "s006",
+            "deploymentId": "d003",
+            "type": "probe",
+            "quality": 0.45,
+            "status": "planted",
+            "plantedAt": "2026-01-20T07:30:00.000Z",
+            "insights": []
+        },
+        {
+            "id": "s007",
+            "deploymentId": "d004",
+            "type": "idea",
+            "quality": 0.52,
+            "status": "planted",
+            "plantedAt": "2026-02-01T06:00:00.000Z",
+            "insights": []
+        },
+        {
+            "id": "s008",
+            "deploymentId": "d005",
+            "type": "hypothesis",
+            "quality": 0.35,
+            "status": "planted",
+            "plantedAt": "2026-02-10T10:00:00.000Z",
+            "insights": []
+        }
+    ]
 }

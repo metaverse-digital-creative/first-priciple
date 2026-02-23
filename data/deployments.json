@@ -1,4 +1,182 @@
 {
-  "version": "1.0.0",
-  "deployments": []
+  "version": "1.2.0",
+  "deployments": [
+    {
+      "id": "d001",
+      "factory": {
+        "name": "京茂機電 CNC工廠",
+        "type": "metalwork",
+        "location": "台中工業區",
+        "workers": 65
+      },
+      "robots": {
+        "count": 8,
+        "model": "Unitree G1",
+        "workStation": "Welding"
+      },
+      "revenue": {
+        "dailyRate": 200,
+        "mechaOsCut": 0.30
+      },
+      "createdAt": "2025-12-15T08:00:00.000Z",
+      "daysActive": 0,
+      "desireState": {
+        "open_loops": 2,
+        "max_loops": 3,
+        "anticipation_level": 6,
+        "days_since_touch": 2,
+        "active_seeds": ["s001", "s003"],
+        "stage": "PARTIAL_REWARD",
+        "content_rotation": "celebration"
+      },
+      "seed": {
+        "type": "hypothesis",
+        "quality": 0.72,
+        "status": "harvested",
+        "plantedAt": "2025-12-15T08:00:00.000Z",
+        "harvestedAt": "2026-01-10T14:30:00.000Z"
+      }
+    },
+    {
+      "id": "d002",
+      "factory": {
+        "name": "陳先生焊接工廠",
+        "type": "metalwork",
+        "location": "海防市",
+        "workers": 35
+      },
+      "robots": {
+        "count": 5,
+        "model": "Unitree G1",
+        "workStation": "Welding"
+      },
+      "revenue": {
+        "dailyRate": 200,
+        "mechaOsCut": 0.30
+      },
+      "createdAt": "2026-01-05T09:00:00.000Z",
+      "daysActive": 0,
+      "desireState": {
+        "open_loops": 1,
+        "max_loops": 3,
+        "anticipation_level": 4,
+        "days_since_touch": 5,
+        "active_seeds": ["s004"],
+        "stage": "ANTICIPATION",
+        "content_rotation": "insight"
+      },
+      "seed": {
+        "type": "experiment",
+        "quality": 0.58,
+        "status": "harvested",
+        "plantedAt": "2026-01-05T09:00:00.000Z",
+        "harvestedAt": "2026-01-28T11:00:00.000Z"
+      }
+    },
+    {
+      "id": "d003",
+      "factory": {
+        "name": "立達汽車零件",
+        "type": "automotive",
+        "location": "桃園",
+        "workers": 120
+      },
+      "robots": {
+        "count": 12,
+        "model": "Unitree H1",
+        "workStation": "Assembly"
+      },
+      "revenue": {
+        "dailyRate": 200,
+        "mechaOsCut": 0.30
+      },
+      "createdAt": "2026-01-20T07:30:00.000Z",
+      "daysActive": 0,
+      "desireState": {
+        "open_loops": 0,
+        "max_loops": 3,
+        "anticipation_level": 1,
+        "days_since_touch": 8,
+        "active_seeds": [],
+        "stage": "CUE",
+        "content_rotation": "question"
+      },
+      "seed": {
+        "type": "probe",
+        "quality": 0.45,
+        "status": "planted",
+        "plantedAt": "2026-01-20T07:30:00.000Z"
+      }
+    },
+    {
+      "id": "d004",
+      "factory": {
+        "name": "大成食品加工",
+        "type": "food",
+        "location": "嘉義",
+        "workers": 80
+      },
+      "robots": {
+        "count": 6,
+        "model": "Delta Cobot",
+        "workStation": "Packaging"
+      },
+      "revenue": {
+        "dailyRate": 200,
+        "mechaOsCut": 0.30
+      },
+      "createdAt": "2026-02-01T06:00:00.000Z",
+      "daysActive": 0,
+      "desireState": {
+        "open_loops": 1,
+        "max_loops": 3,
+        "anticipation_level": 3,
+        "days_since_touch": 3,
+        "active_seeds": ["s007"],
+        "stage": "SEEKING",
+        "content_rotation": "surprise"
+      },
+      "seed": {
+        "type": "idea",
+        "quality": 0.52,
+        "status": "planted",
+        "plantedAt": "2026-02-01T06:00:00.000Z"
+      }
+    },
+    {
+      "id": "d005",
+      "factory": {
+        "name": "順豐物流中心",
+        "type": "logistics",
+        "location": "新竹科學園區",
+        "workers": 200
+      },
+      "robots": {
+        "count": 15,
+        "model": "Unitree G1",
+        "workStation": "Picking"
+      },
+      "revenue": {
+        "dailyRate": 200,
+        "mechaOsCut": 0.30
+      },
+      "createdAt": "2026-02-10T10:00:00.000Z",
+      "daysActive": 0,
+      "desireState": {
+        "open_loops": 0,
+        "max_loops": 3,
+        "anticipation_level": 0,
+        "days_since_touch": 1,
+        "active_seeds": [],
+        "stage": "CUE",
+        "content_rotation": "insight"
+      },
+      "seed": {
+        "type": "hypothesis",
+        "quality": 0.35,
+        "status": "planted",
+        "plantedAt": "2026-02-10T10:00:00.000Z"
+      }
+    }
+  ]
 }

@@ -733,3 +733,196 @@ body::before {
 
 /* --- Selection --- */
 ::selection { background: var(--cyan-dim); color: var(--cyan); }
+
+/* --- Entrance Animations --- */
+@keyframes cardSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes metricPop {
+  0% { opacity: 0; transform: scale(0.85); }
+  60% { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.panel.active .card {
+  animation: cardSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.panel.active .card:nth-child(2) { animation-delay: 0.08s; }
+.panel.active .card:nth-child(3) { animation-delay: 0.16s; }
+.panel.active .card:nth-child(4) { animation-delay: 0.24s; }
+
+.panel.active .metric-tile {
+  animation: metricPop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.panel.active .metric-tile:nth-child(2) { animation-delay: 0.06s; }
+.panel.active .metric-tile:nth-child(3) { animation-delay: 0.12s; }
+.panel.active .metric-tile:nth-child(4) { animation-delay: 0.18s; }
+
+.panel.active .deploy-item {
+  animation: fadeInLeft 0.35s ease both;
+}
+
+.panel.active .deploy-item:nth-child(2) { animation-delay: 0.06s; }
+.panel.active .deploy-item:nth-child(3) { animation-delay: 0.12s; }
+.panel.active .deploy-item:nth-child(4) { animation-delay: 0.18s; }
+.panel.active .deploy-item:nth-child(5) { animation-delay: 0.24s; }
+
+/* --- Value Change Pulse --- */
+@keyframes valuePulse {
+  0% { text-shadow: none; }
+  50% { text-shadow: 0 0 20px currentColor; }
+  100% { text-shadow: none; }
+}
+
+.value-pulse {
+  animation: valuePulse 0.8s ease;
+}
+
+/* --- Toast Notifications --- */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 14px 20px;
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card), 0 8px 32px rgba(0, 0, 0, 0.4);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  pointer-events: all;
+  animation: toastIn 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+             toastOut 0.35s ease 3.5s forwards;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 360px;
+}
+
+.toast-icon { font-size: 1.1rem; }
+
+.toast.toast-success { border-left: 3px solid var(--green); }
+.toast.toast-info { border-left: 3px solid var(--cyan); }
+.toast.toast-warning { border-left: 3px solid var(--amber); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+/* --- Sparkline --- */
+.sparkline-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sparkline {
+  width: 80px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.sparkline-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* --- Pitch Export --- */
+.pitch-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+  justify-content: center;
+}
+
+.btn-export {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-export:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  transform: translateY(-2px);
+}
+
+.btn-export.copied {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* --- Status Indicator --- */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: statusPulse 2s ease infinite;
+  margin-right: 6px;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
+}
+
+/* --- Table row hover --- */
+#earn-table-body tr {
+  transition: background 0.2s ease;
+}
+
+#earn-table-body tr:hover {
+  background: var(--bg-glass);
+}
+
+#earn-table-body td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* --- Deploy badge counter fix --- */
+.deploy-count-badge-critical {
+  background: var(--red-dim) !important;
+  color: var(--red) !important;
+}
+

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MECHA-DASH — Robot Deployment Command Center. Robots go to work. Boss makes money. 機器人出去上班 · 替老闆賺錢">
+  <meta name="description"
+    content="MECHA-DASH — Robot Deployment Command Center. Robots go to work. Boss makes money. 機器人出去上班 · 替老闆賺錢">
   <title>MECHA-DASH — 機器人出去上班 · 替老闆賺錢</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div id="app">
 
@@ -19,7 +22,7 @@
       <div class="header-stats">
         <div class="header-stat">
           <div class="stat-value" id="stat-revenue" data-prefix="$">$0</div>
-          <div class="stat-label">MECHA-OS Revenue</div>
+          <div class="stat-label"><span class="status-dot"></span>MECHA-OS Revenue</div>
         </div>
         <div class="header-stat">
           <div class="stat-value" id="stat-robots">0</div>
@@ -130,7 +133,8 @@
           <!-- Step 3: Work Station -->
           <div class="wizard-step">
             <div class="wizard-step-title">Step 3 — Target Work Station</div>
-            <div class="wizard-step-desc">Start with the simplest station. Never the most complex. (Principle T1.4)</div>
+            <div class="wizard-step-desc">Start with the simplest station. Never the most complex. (Principle T1.4)
+            </div>
             <div class="form-group">
               <label class="form-label" for="r-station">Primary Work Station</label>
               <select class="form-select" id="r-station">
@@ -143,7 +147,8 @@
               </select>
             </div>
             <div class="principle-item" style="margin-top:12px">
-              <span class="principle-num">T1.4</span>Always start with the simplest work station — never the most complex.
+              <span class="principle-num">T1.4</span>Always start with the simplest work station — never the most
+              complex.
             </div>
           </div>
 
@@ -180,7 +185,8 @@
           <!-- Step 5: Triggers -->
           <div class="wizard-step">
             <div class="wizard-step-title">Step 5 — Data Triggers</div>
-            <div class="wizard-step-desc">Features unlock when data says so — not when the calendar says so. (seed_s29)</div>
+            <div class="wizard-step-desc">Features unlock when data says so — not when the calendar says so. (seed_s29)
+            </div>
             <div class="form-group">
               <label class="form-label">Trigger 1: First Data Collection</label>
               <div class="principle-item">
@@ -260,17 +266,30 @@
           <table style="width:100%;border-collapse:collapse;font-size:0.85rem">
             <thead>
               <tr style="border-bottom:1px solid var(--border)">
-                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Factory</th>
-                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Robots</th>
-                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Days</th>
-                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Gross</th>
-                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Your Cut</th>
-                <th style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">Boss Take</th>
+                <th
+                  style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">
+                  Factory</th>
+                <th
+                  style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">
+                  Robots</th>
+                <th
+                  style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">
+                  Days</th>
+                <th
+                  style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">
+                  Gross</th>
+                <th
+                  style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">
+                  Your Cut</th>
+                <th
+                  style="text-align:left;padding:10px;color:var(--text-muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em">
+                  Boss Take</th>
               </tr>
             </thead>
             <tbody id="earn-table-body">
               <tr>
-                <td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Deploy your first factory to see earnings</td>
+                <td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Deploy your first factory
+                  to see earnings</td>
               </tr>
             </tbody>
           </table>
@@ -283,9 +302,12 @@
         </div>
         <div style="font-family:var(--font-mono);font-size:0.9rem;line-height:2;color:var(--text-secondary)">
           <div><span style="color:var(--amber)">Gross</span> = Robots × $200/day × Days Active</div>
-          <div><span style="color:var(--cyan)">MECHA-OS</span> = Gross × <span style="color:var(--cyan)">30%</span></div>
-          <div><span style="color:var(--green)">Boss Take</span> = Gross × <span style="color:var(--green)">70%</span></div>
-          <div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted)">→ Boss sees money first. Trust compounds. Dependency grows.</div>
+          <div><span style="color:var(--cyan)">MECHA-OS</span> = Gross × <span style="color:var(--cyan)">30%</span>
+          </div>
+          <div><span style="color:var(--green)">Boss Take</span> = Gross × <span style="color:var(--green)">70%</span>
+          </div>
+          <div style="margin-top:8px;font-size:0.8rem;color:var(--text-muted)">→ Boss sees money first. Trust compounds.
+            Dependency grows.</div>
         </div>
       </div>
     </section>
@@ -298,7 +320,8 @@
           <span class="card-badge badge-purple">D1-D5 ACTIVE</span>
         </div>
         <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;line-height:1.6">
-          <strong style="color:var(--text-secondary)">Dopamine ≠ pleasure. Dopamine = anticipation of pleasure.</strong><br>
+          <strong style="color:var(--text-secondary)">Dopamine ≠ pleasure. Dopamine = anticipation of
+            pleasure.</strong><br>
           The peak spike happens BEFORE the reward, not during it. Keep the boss wanting.
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
@@ -317,6 +340,17 @@
           <p>Deploy your first factory to start the Desire Engine.</p>
         </div>
       </div>
+
+      <!-- Email Intelligence -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Email Intelligence Feed</span>
+          <span class="card-badge badge-purple" id="email-signal-count">0 SIGNALS</span>
+        </div>
+        <div id="email-intel-list">
+          <div style="color:var(--text-muted);font-size:0.85rem">Loading email intelligence...</div>
+        </div>
+      </div>
     </section>
 
     <!-- ============== PANEL 4: COMPOUND ============== -->
@@ -330,7 +364,8 @@
           <canvas id="seed-canvas"></canvas>
         </div>
         <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">
-          Each deployment is a seed. Quality compounds per harvest. After ~15 deployments, the system generates its own hypotheses.
+          Each deployment is a seed. Quality compounds per harvest. After ~15 deployments, the system generates its own
+          hypotheses.
         </div>
       </div>
 
@@ -356,6 +391,17 @@
           <span class="card-badge badge-amber">VERSIONED</span>
         </div>
         <div id="lessons-list"></div>
+      </div>
+
+      <!-- Email-Derived Seeds -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Email-Derived Insights</span>
+          <span class="card-badge badge-purple">EMAIL-OS</span>
+        </div>
+        <div id="email-seeds-list">
+          <div style="color:var(--text-muted);font-size:0.85rem">Loading email seeds...</div>
+        </div>
       </div>
     </section>
 
@@ -393,6 +439,11 @@
 
   </div>
 
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="email-bridge.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>

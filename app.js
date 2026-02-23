@@ -26,11 +26,11 @@ const Bus = {
 const StateMachine = {
   state: 'IDLE',
   transitions: {
-    IDLE:        ['DEPLOYING'],
-    DEPLOYING:   ['ACTIVE', 'IDLE'],
-    ACTIVE:      ['EARNING', 'IDLE'],
-    EARNING:     ['ENGAGING', 'IDLE'],
-    ENGAGING:    ['COMPOUNDING', 'IDLE'],
+    IDLE: ['DEPLOYING'],
+    DEPLOYING: ['ACTIVE', 'IDLE'],
+    ACTIVE: ['EARNING', 'IDLE'],
+    EARNING: ['ENGAGING', 'IDLE'],
+    ENGAGING: ['COMPOUNDING', 'IDLE'],
     COMPOUNDING: ['IDLE']
   },
   go(next) {
@@ -126,6 +126,26 @@ const Store = {
 
   getLessons() {
     return this.load().lessons;
+  },
+
+  async loadSeedData() {
+    const data = this.load();
+    if (data.deployments.length > 0) return false; // Already has data
+
+    try {
+      const res = await fetch('data/deployments.json');
+      if (!res.ok) return false;
+      const seedData = await res.json();
+      if (seedData.deployments && seedData.deployments.length > 0) {
+        data.deployments = seedData.deployments;
+        this.save(data);
+        Bus.emit('data:seeded', { count: seedData.deployments.length });
+        return true;
+      }
+    } catch {
+      // Seed data not available — that's fine
+    }
+    return false;
   }
 };
 
@@ -173,11 +193,11 @@ const DesireEngine = {
   STAGES: ['CUE', 'ANTICIPATION', 'PARTIAL_REWARD', 'SEEKING', 'VARIABLE_REWARD', 'INCOMPLETE_CLOSURE'],
 
   STAGE_INFO: {
-    CUE:                { label: 'Cue',               icon: '🎯', desc: 'Plant a signal before the boss is aware of it' },
-    ANTICIPATION:       { label: 'Anticipation',       icon: '⏳', desc: 'Control the gap between signal and reveal' },
-    PARTIAL_REWARD:     { label: 'Partial Reward',     icon: '🎁', desc: 'Solve a visible problem, reveal system depth' },
-    SEEKING:            { label: 'Seeking',            icon: '🔍', desc: 'End every conversation with an open loop' },
-    VARIABLE_REWARD:    { label: 'Variable Reward',    icon: '🎲', desc: 'Engineer encounters that feel like luck' },
+    CUE: { label: 'Cue', icon: '🎯', desc: 'Plant a signal before the boss is aware of it' },
+    ANTICIPATION: { label: 'Anticipation', icon: '⏳', desc: 'Control the gap between signal and reveal' },
+    PARTIAL_REWARD: { label: 'Partial Reward', icon: '🎁', desc: 'Solve a visible problem, reveal system depth' },
+    SEEKING: { label: 'Seeking', icon: '🔍', desc: 'End every conversation with an open loop' },
+    VARIABLE_REWARD: { label: 'Variable Reward', icon: '🎲', desc: 'Engineer encounters that feel like luck' },
     INCOMPLETE_CLOSURE: { label: 'Incomplete Closure', icon: '♾️', desc: 'Best insight unlocks only after trust is built' }
   },
 
@@ -283,7 +303,7 @@ const Principles = {
   ],
 
   tier2: {
-    automotive:  [
+    automotive: [
       'What is the union\'s emotional temperature toward automation?',
       'What is the cost of one hour of line stoppage?',
       'Which stations have the highest worker turnover?'
@@ -293,17 +313,17 @@ const Principles = {
       'What is the process changeover frequency?',
       'How many product variants run on the same line?'
     ],
-    logistics:   [
+    logistics: [
       'Is the pick path data already digitized?',
       'What is the seasonal volume multiplier?',
       'How many unique SKUs per shift?'
     ],
-    food:        [
+    food: [
       'What are the hygiene regulations for robot materials?',
       'What are the temperature and humidity extremes?',
       'How often is deep cleaning required?'
     ],
-    metalwork:   [
+    metalwork: [
       'What are the dominant CNC operations (milling, turning, grinding)?',
       'What is the defect rate on current human-operated stations?',
       'How many qualified second-generation (G2) operators are available?'
@@ -349,9 +369,22 @@ const UI = {
   currentTab: 'deploy',
   wizardStep: 0,
 
-  init() {
+  async init() {
     this.bindTabs();
     this.bindWizard();
+
+    // Load seed data if localStorage is empty
+    const seeded = await Store.loadSeedData();
+    if (seeded) {
+      console.log('📦 Loaded seed deployment data');
+    }
+
+    // Load email bridge
+    if (typeof EmailBridge !== 'undefined') {
+      await EmailBridge.loadSignals();
+      console.log('📧 Email bridge loaded', EmailBridge.getStats());
+    }
+
     this.render();
     Bus.on('deployment:added', () => this.render());
     Bus.on('deployment:updated', () => this.render());
@@ -450,10 +483,10 @@ const UI = {
 
     switch (this.currentTab) {
       case 'deploy': this.renderDeploy(); break;
-      case 'earn':   this.renderEarn(); break;
+      case 'earn': this.renderEarn(); break;
       case 'engage': this.renderEngage(); break;
       case 'compound': this.renderCompound(); break;
-      case 'pitch':  this.renderPitch(); break;
+      case 'pitch': this.renderPitch(); break;
     }
   },
 
@@ -465,6 +498,13 @@ const UI = {
     this.animateValue(el('stat-revenue'), totals.mechaOsCut);
     this.animateValue(el('stat-robots'), totals.totalRobots);
     this.animateValue(el('stat-deploys'), deployments.length);
+
+    // Update deploy badge count
+    const badge = document.getElementById('deploy-count-badge');
+    if (badge) {
+      badge.textContent = `${deployments.length} ACTIVE`;
+      badge.className = deployments.length > 0 ? 'card-badge badge-green' : 'card-badge badge-green';
+    }
   },
 
   animateValue(el, target) {
@@ -575,16 +615,16 @@ const UI = {
           </div>
           <div class="desire-timeline">
             ${DesireEngine.STAGES.map((stage, i) => {
-              const info = DesireEngine.STAGE_INFO[stage];
-              const isActive = stage === ds.stage;
-              const isCompleted = DesireEngine.STAGES.indexOf(ds.stage) > i;
-              return `
+        const info = DesireEngine.STAGE_INFO[stage];
+        const isActive = stage === ds.stage;
+        const isCompleted = DesireEngine.STAGES.indexOf(ds.stage) > i;
+        return `
                 <div class="desire-stage ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}">
                   <div class="desire-stage-name">${info.icon} ${info.label}</div>
                   <div class="desire-stage-desc">${info.desc}</div>
                 </div>
               `;
-            }).join('')}
+      }).join('')}
           </div>
           <div style="margin-top:16px;padding:12px 16px;background:var(--bg-glass);border:1px solid var(--border);border-radius:var(--radius-sm)">
             <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Recommended Action</div>
@@ -599,16 +639,20 @@ const UI = {
         </div>
       `;
     }).join('');
+
+    // Render email intelligence
+    this.renderEmailIntel();
   },
 
   advanceDesire(deploymentId) {
     const data = Store.load();
     const d = data.deployments.find(x => x.id === deploymentId);
     if (!d) return;
-    DesireEngine.advanceStage(d.desireState);
+    const newStage = DesireEngine.advanceStage(d.desireState);
     DesireEngine.rotateContent(d.desireState);
     Store.save(data);
     this.renderEngage();
+    Toast.info(`${d.factory?.name}: → ${DesireEngine.STAGE_INFO[newStage]?.label}`, DesireEngine.STAGE_INFO[newStage]?.icon || '▶');
   },
 
   plantLoop(deploymentId) {
@@ -618,6 +662,9 @@ const UI = {
     if (d.desireState.open_loops < d.desireState.max_loops) {
       d.desireState.open_loops++;
       d.desireState.anticipation_level = Math.min(10, d.desireState.anticipation_level + 2);
+      Toast.success(`Loop planted — ${d.desireState.open_loops}/${d.desireState.max_loops} active`, '🌱');
+    } else {
+      Toast.warning('Max loops reached — don\'t overwhelm the boss', '⚠️');
     }
     Store.save(data);
     this.renderEngage();
@@ -632,6 +679,78 @@ const UI = {
     d.desireState.anticipation_level = Math.max(0, d.desireState.anticipation_level - 3);
     Store.save(data);
     this.renderEngage();
+    Toast.success(`Touched ${d.factory?.name} — anticipation reset`, '📞');
+  },
+
+  // --- Email Intelligence ---
+  renderEmailIntel() {
+    const list = document.getElementById('email-intel-list');
+    const badge = document.getElementById('email-signal-count');
+    if (!list || typeof EmailBridge === 'undefined') return;
+
+    const signals = EmailBridge.signals;
+    if (badge) badge.textContent = `${signals.length} SIGNALS`;
+
+    if (signals.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem">No email intelligence signals yet.</div>';
+      return;
+    }
+
+    const typeIcons = { opportunity: '💎', threat: '⚡', insight: '💡', engagement: '💬' };
+    const zoneColors = { red: 'var(--red)', yellow: 'var(--amber)', green: 'var(--green)' };
+
+    list.innerHTML = signals.map(s => {
+      const icon = typeIcons[s.type] || '📧';
+      const zoneColor = zoneColors[s.zone] || 'var(--text-muted)';
+      const timeAgo = this._timeAgo(s.timestamp);
+
+      return `
+        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start">
+          <span style="font-size:1.2rem;flex-shrink:0">${icon}</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:0.85rem;font-weight:600;color:var(--text-primary);margin-bottom:2px">${s.source}</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px">${s.subject}</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary)">${s.insight}</div>
+          </div>
+          <div style="flex-shrink:0;text-align:right">
+            <div style="width:8px;height:8px;border-radius:50%;background:${zoneColor};margin-left:auto;margin-bottom:4px"></div>
+            <div style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-mono)">${timeAgo}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  renderEmailSeeds() {
+    const list = document.getElementById('email-seeds-list');
+    if (!list || typeof EmailBridge === 'undefined') return;
+
+    const insights = EmailBridge.getByType('insight');
+    const opportunities = EmailBridge.getByType('opportunity');
+    const all = [...insights, ...opportunities];
+
+    if (all.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem">No email-derived seeds yet.</div>';
+      return;
+    }
+
+    list.innerHTML = all.map(s => `
+      <div class="principle-item" style="margin-bottom:8px">
+        <span class="principle-num">${s.type === 'opportunity' ? '💎' : '💡'}</span>
+        ${s.insight}
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px">${s.source} · ${this._timeAgo(s.timestamp)}</div>
+      </div>
+    `).join('');
+  },
+
+  _timeAgo(isoDate) {
+    if (!isoDate) return '';
+    const diff = Date.now() - new Date(isoDate).getTime();
+    const hours = Math.floor(diff / 3600000);
+    if (hours < 1) return 'now';
+    if (hours < 24) return `${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `${days}d`;
   },
 
   // --- Panel: Compound ---
@@ -685,6 +804,9 @@ const UI = {
         `).join('');
       }
     }
+
+    // Email-derived seeds
+    this.renderEmailSeeds();
   },
 
   renderSeedCurve(deployments) {
@@ -840,10 +962,105 @@ const UI = {
           <div style="font-size:0.85rem;color:var(--amber);font-weight:600;margin-bottom:4px">机器人出去上班 · 替老闆賺錢</div>
           <div style="font-size:0.8rem;color:var(--text-muted)">Robots go to work. Boss makes money. You take 30%.</div>
         </div>
+
+        <div class="pitch-actions">
+          <button class="btn-export" onclick="copyPitchToClipboard()">📋 Copy Proposal</button>
+        </div>
       </div>
     `;
   }
 };
+
+// ===========================
+// Toast Notification System
+// ===========================
+const Toast = {
+  show(message, type = 'info', icon = 'ℹ️') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  },
+  success(msg, icon = '✅') { this.show(msg, 'success', icon); },
+  info(msg, icon = 'ℹ️') { this.show(msg, 'info', icon); },
+  warning(msg, icon = '⚠️') { this.show(msg, 'warning', icon); }
+};
+
+// ===========================
+// Sparkline Drawing Utility
+// ===========================
+const Sparkline = {
+  draw(canvas, data, color = '#00f0ff') {
+    if (!canvas || data.length < 2) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, w, h);
+
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const range = max - min || 1;
+    const step = w / (data.length - 1);
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.lineJoin = 'round';
+
+    data.forEach((v, i) => {
+      const x = i * step;
+      const y = h - ((v - min) / range) * (h - 4) - 2;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Glow
+    ctx.strokeStyle = color.replace(')', ', 0.15)').replace('rgb', 'rgba');
+    ctx.lineWidth = 4;
+    ctx.stroke();
+  }
+};
+
+// ===========================
+// Pitch Export
+// ===========================
+function copyPitchToClipboard() {
+  const pitchOutput = document.getElementById('pitch-output');
+  if (!pitchOutput) return;
+
+  const factoryName = document.getElementById('pitch-factory')?.value || 'Factory';
+  const robotCount = parseInt(document.getElementById('pitch-robots')?.value) || 10;
+  const workStation = document.getElementById('pitch-station')?.value || 'Welding';
+  const pitch = PitchGenerator.generate(factoryName, robotCount, workStation);
+
+  const text = `🤖 MECHA-OS Deployment Proposal
+${factoryName} · ${workStation} Station · ${robotCount} Robots
+
+💰 Projected Monthly Income (Boss Take): $${pitch.monthlyBossIncome.toLocaleString()}/mo
+📊 Yearly Gross: $${pitch.yearlyGross.toLocaleString()}
+🟢 Boss Take (70%): $${pitch.yearlyBossTake.toLocaleString()}
+🔵 MECHA-OS (30%): $${pitch.yearlyMechaOsCut.toLocaleString()}
+🧬 Seed Quality Projection: ${pitch.projectedSeedQuality.toFixed(2)}
+
+📈 Desire Timeline:
+${pitch.desireTimeline.map(t => `  W${t.week}: ${t.event}`).join('\n')}
+
+机器人出去上班 · 替老闆賺錢
+Robots go to work. Boss makes money. You take 30%.`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    Toast.success('Proposal copied to clipboard!', '📋');
+  }).catch(() => {
+    Toast.warning('Failed to copy — try manually', '⚠️');
+  });
+}
 
 // ===========================
 // Bootstrap
@@ -855,4 +1072,13 @@ document.addEventListener('DOMContentLoaded', () => {
   ['pitch-factory', 'pitch-robots', 'pitch-station'].forEach(id => {
     document.getElementById(id)?.addEventListener('input', () => UI.renderPitch());
   });
+
+  // Wire toast notifications to bus events
+  Bus.on('deployment:added', (d) => {
+    Toast.success(`Deployed ${d.factory?.name || 'factory'} with ${d.robots?.count || 0} robots`, '🚀');
+  });
+  Bus.on('data:seeded', (data) => {
+    Toast.info(`Loaded ${data.count} factory deployments`, '📦');
+  });
 });
+
