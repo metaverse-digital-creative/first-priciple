@@ -9,6 +9,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 > - MINOR → new features (new panel, new data source)
 > - PATCH → bug fixes, copy tweaks, styling polish
 
+## [1.3.0] — 2026-02-23
+
+### Added
+- **MECHA AI chat widget** (`mecha-chat.js`) — drop-in Intercom-style chat, connects to AI agent
+- **API bridge** (`api-bridge.js`) — lightweight HTTP server bridging chat → agent backend
+- **Cloudflare Tunnel support** — expose agent endpoint to anyone who clones the repo
+- **Rate limiting** — 20 requests/min per session, in-memory
+- **CORS support** — widget works from any origin
+- **Mobile responsive** — chat window adapts to small screens
+
+### Changed
+- `index.html` — embedded MECHA_CONFIG + chat widget script tags
+- `README.md` — full setup docs for agent integration
+- `VERSION` → 1.3.0
+
 ## [1.2.0] — 2026-02-23
 
 ### Added

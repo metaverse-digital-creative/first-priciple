@@ -444,6 +444,19 @@
 
   <script src="email-bridge.js"></script>
   <script src="app.js"></script>
+
+  <!-- MECHA AI Chat Widget -->
+  <script>
+    window.MECHA_CONFIG = {
+      endpoint: window.location.hostname === 'localhost' 
+        ? 'http://localhost:18800' 
+        : 'https://associations-sending-vice-brandon.trycloudflare.com',
+      agentId: 'mecha',
+      title: 'MECHA AI',
+      subtitle: 'First Principles • Deploy • Earn'
+    };
+  </script>
+  <script src="mecha-chat.js"></script>
 </body>
 
 </html>
