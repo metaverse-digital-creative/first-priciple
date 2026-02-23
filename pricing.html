@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MECHA AI — Pricing</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #0a0a0f;
+      color: #e0e0e0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px 80px;
+    }
+
+    /* Header */
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      color: #00f0ff;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: rgba(255,255,255,0.5);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Early Adopter Banner */
+    .ea-banner {
+      background: linear-gradient(135deg, rgba(0,240,255,0.1) 0%, rgba(0,255,136,0.08) 100%);
+      border: 1px solid rgba(0,240,255,0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .ea-banner h3 {
+      color: #00ff88;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .ea-progress-wrap {
+      margin: 12px 0 8px;
+    }
+
+    .ea-progress {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .ea-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00f0ff, #00ff88);
+      border-radius: 4px;
+      transition: width 1s ease-out;
+    }
+
+    .ea-progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 6px;
+    }
+
+    .ea-spots {
+      color: #ffaa00;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    /* Pricing Grid */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    @media (max-width: 600px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+
+    .plan {
+      background: #12121a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px 24px;
+      position: relative;
+    }
+
+    .plan-pro {
+      border-color: rgba(0,240,255,0.3);
+      background: linear-gradient(180deg, rgba(0,240,255,0.04) 0%, #12121a 50%);
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: linear-gradient(135deg, #00f0ff, #00ff88);
+      color: #0a0a0f;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .plan-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #e0e0e0;
+    }
+
+    .plan-price {
+      margin-bottom: 24px;
+    }
+
+    .price-amount {
+      font-size: 2.5rem;
+      font-weight: 800;
+    }
+
+    .plan-pro .price-amount { color: #00f0ff; }
+
+    .price-original {
+      text-decoration: line-through;
+      color: rgba(255,255,255,0.25);
+      font-size: 1.1rem;
+      margin-right: 8px;
+    }
+
+    .price-period {
+      color: rgba(255,255,255,0.35);
+      font-size: 0.85rem;
+    }
+
+    .price-lock {
+      display: inline-block;
+      background: rgba(0,255,136,0.1);
+      color: #00ff88;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .plan-features li {
+      padding: 8px 0;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.4;
+    }
+
+    .plan-features li::before {
+      content: '✓';
+      color: #00ff88;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .plan-features li.disabled {
+      color: rgba(255,255,255,0.2);
+    }
+
+    .plan-features li.disabled::before {
+      content: '—';
+      color: rgba(255,255,255,0.15);
+    }
+
+    .plan-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-free {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-free:hover {
+      background: rgba(255,255,255,0.1);
+      color: #e0e0e0;
+    }
+
+    .btn-pro {
+      background: linear-gradient(135deg, #00f0ff 0%, #00ff88 100%);
+      color: #0a0a0f;
+      box-shadow: 0 0 30px rgba(0,240,255,0.25);
+    }
+
+    .btn-pro:hover {
+      box-shadow: 0 0 50px rgba(0,240,255,0.45);
+      transform: translateY(-2px);
+    }
+
+    /* Tiers Explanation */
+    .tiers-section {
+      margin-bottom: 48px;
+    }
+
+    .tiers-section h2 {
+      font-size: 1.2rem;
+      color: #e0e0e0;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .tier-steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .tier-step {
+      text-align: center;
+      padding: 16px 20px;
+      background: #12121a;
+      border-radius: 12px;
+      min-width: 140px;
+      position: relative;
+    }
+
+    .tier-step.active {
+      border: 1px solid rgba(0,240,255,0.3);
+      background: rgba(0,240,255,0.04);
+    }
+
+    .tier-step-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #00f0ff;
+    }
+
+    .tier-step.active .tier-step-price {
+      color: #00ff88;
+    }
+
+    .tier-step-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
+    }
+
+    .tier-step-tag {
+      font-size: 10px;
+      color: #ffaa00;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    .tier-arrow {
+      color: rgba(255,255,255,0.15);
+      font-size: 1.5rem;
+      padding: 0 8px;
+    }
+
+    /* Case Study */
+    .case-study {
+      background: #12121a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px 24px;
+      margin-bottom: 48px;
+    }
+
+    .case-study h3 {
+      color: #00f0ff;
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+
+    .case-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 14px;
+    }
+
+    .case-stat-label { color: rgba(255,255,255,0.5); }
+    .case-stat-value { font-weight: 700; }
+    .case-stat-value.red { color: #ff4060; }
+    .case-stat-value.green { color: #00ff88; }
+
+    .case-quote {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(0,240,255,0.04);
+      border-left: 3px solid #00f0ff;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      color: rgba(255,255,255,0.25);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .footer a {
+      color: rgba(0,240,255,0.5);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>⚡ MECHA AI</h1>
+      <p>你的收件匣裡藏著多少你不知道的報價單？<br>AI-powered inbox intelligence for manufacturers.</p>
+    </div>
+
+    <!-- Early Adopter Banner -->
+    <div class="ea-banner">
+      <h3>🔒 Early Adopter — 永久鎖定價</h3>
+      <p style="font-size:13px; color:rgba(255,255,255,0.55)">越早加入，價格越低。鎖定後永不調漲。</p>
+      <div class="ea-progress-wrap">
+        <div class="ea-progress">
+          <div class="ea-progress-fill" id="ea-fill" style="width: 0%"></div>
+        </div>
+        <div class="ea-progress-labels">
+          <span>0</span>
+          <span style="left:50%">$9/mo (前50名)</span>
+          <span>$29/mo</span>
+        </div>
+      </div>
+      <div class="ea-spots">🔥 剩餘 <span id="ea-remaining">42</span> 個 $9/mo 名額</div>
+    </div>
+
+    <!-- Pricing Grid -->
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">
+          <span class="price-amount">$0</span>
+          <span class="price-period">/forever</span>
+        </div>
+        <ul class="plan-features">
+          <li>10 messages/day with MECHA AI</li>
+          <li>Inbox Health Score（基本分數）</li>
+          <li>Top 3 critical alerts</li>
+          <li class="disabled">完整分類 breakdown</li>
+          <li class="disabled">RFQ 商業價值排序</li>
+          <li class="disabled">Gmail 過濾規則匯出</li>
+          <li class="disabled">每週自動監控</li>
+          <li class="disabled">WhatsApp / LINE 通知</li>
+        </ul>
+        <a href="index.html" class="plan-btn btn-free">開始使用 — 免費</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan plan-pro">
+        <div class="plan-badge">MOST POPULAR</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">
+          <span class="price-original">$29</span>
+          <span class="price-amount">$9</span>
+          <span class="price-period">/月</span>
+          <br>
+          <span class="price-lock">🔒 Early Adopter — 永久鎖定</span>
+        </div>
+        <ul class="plan-features">
+          <li>Unlimited messages with MECHA AI</li>
+          <li>Inbox Health Score（完整報告）</li>
+          <li>所有 critical alerts + 建議行動</li>
+          <li>完整分類 breakdown + 趨勢</li>
+          <li>RFQ 商業價值排序 + 回覆建議</li>
+          <li>Gmail 過濾規則（一鍵匯入）</li>
+          <li>每週自動掃描 + 報告</li>
+          <li>WhatsApp / LINE 即時通知</li>
+        </ul>
+        <button class="plan-btn btn-pro" id="btn-upgrade">立即鎖定 $9/月 →</button>
+      </div>
+    </div>
+
+    <!-- Price Growth Tiers -->
+    <div class="tiers-section">
+      <h2>📈 Price Growth — 越早越划算</h2>
+      <div class="tier-steps">
+        <div class="tier-step active">
+          <div class="tier-step-price">$9</div>
+          <div class="tier-step-label">前 50 名</div>
+          <div class="tier-step-tag">← 你在這裡</div>
+        </div>
+        <span class="tier-arrow">→</span>
+        <div class="tier-step">
+          <div class="tier-step-price">$19</div>
+          <div class="tier-step-label">51 - 100 名</div>
+          <div class="tier-step-tag"></div>
+        </div>
+        <span class="tier-arrow">→</span>
+        <div class="tier-step">
+          <div class="tier-step-price">$29</div>
+          <div class="tier-step-label">100 名之後</div>
+          <div class="tier-step-tag">正式定價</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Case Study -->
+    <div class="case-study">
+      <h3>📋 真實案例 — 台灣精密加工廠</h3>
+      <div class="case-stat">
+        <span class="case-stat-label">分析郵件數</span>
+        <span class="case-stat-value">600 封</span>
+      </div>
+      <div class="case-stat">
+        <span class="case-stat-label">發現未回覆 RFQ</span>
+        <span class="case-stat-value red">12 封</span>
+      </div>
+      <div class="case-stat">
+        <span class="case-stat-label">預估損失金額</span>
+        <span class="case-stat-value red">NT$ 15,000,000 - 60,000,000</span>
+      </div>
+      <div class="case-stat">
+        <span class="case-stat-label">即將到期認證</span>
+        <span class="case-stat-value red">3 項</span>
+      </div>
+      <div class="case-stat">
+        <span class="case-stat-label">分析時間</span>
+        <span class="case-stat-value green">< 5 分鐘</span>
+      </div>
+      <div class="case-quote">
+        「20 個人的公司，老闆一個人看 600 封信。MECHA AI 5 分鐘找出我們不知道的報價單。」<br>
+        — 精密機械加工業者，南台灣
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Built by <a href="https://github.com/metaverse-digital-creative">Metaverse Digital Creative</a></p>
+      <p>元宇宙數位創意有限公司 · Taiwan 🇹🇼</p>
+    </div>
+
+  </div>
+
+  <script>
+    // Animate progress bar
+    setTimeout(() => {
+      document.getElementById('ea-fill').style.width = '16%';
+    }, 300);
+
+    // Upgrade button → contact (no payment system yet)
+    document.getElementById('btn-upgrade').addEventListener('click', () => {
+      window.open('https://t.me/SiliconValleyAI_bot?start=upgrade_pro', '_blank');
+    });
+  </script>
+</body>
+</html>
