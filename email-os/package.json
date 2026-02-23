@@ -13,12 +13,20 @@
         "triage": "node src/index.js --triage",
         "digest": "node src/index.js --digest",
         "auth": "node src/gmail/auth.js",
-        "test": "node --test src/**/*.test.js"
+        "test": "node --test src/**/*.test.js",
+        "db:generate": "drizzle-kit generate",
+        "db:migrate": "drizzle-kit migrate",
+        "db:studio": "drizzle-kit studio"
     },
     "dependencies": {
-        "googleapis": "^130.0.0"
+        "dotenv": "^16.4.0",
+        "drizzle-orm": "^0.38.0",
+        "googleapis": "^130.0.0",
+        "pg": "^8.13.0"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "drizzle-kit": "^0.30.0"
+    },
     "engines": {
         "node": ">=20.0.0"
     },

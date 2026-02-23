@@ -14,6 +14,9 @@
 
 import bus from '../bus.js';
 import { createProviderFromEnv, LLMError } from '../llm.js';
+import { db, isDbAvailable } from '../db/db.js';
+import { classifications } from '../db/schema.js';
+import { desc } from 'drizzle-orm';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -243,6 +246,20 @@ class ClassifyAgent {
 
         this.classifications.push(result);
 
+        // Persist to DB
+        if (isDbAvailable()) {
+            db.insert(classifications).values({
+                emailId: email.id,
+                threadId: email.threadId,
+                zone,
+                score,
+                confidence,
+                method,
+                signals,
+                reasoning: result.reasoning,
+            }).catch(err => console.warn(`   ⚠️  DB classify insert: ${err.message}`));
+        }
+
         bus.publish('classify', 'email.classified', {
             emailId: email.id,
             zone,
@@ -339,7 +356,16 @@ class ClassifyAgent {
     }
 
     addVip(email) { this.vipSenders.add(email); }
-    getLog() { return this.classifications; }
+
+    async getLog() {
+        if (isDbAvailable()) {
+            try {
+                return await db.select().from(classifications).orderBy(desc(classifications.classifiedAt)).limit(100);
+            } catch { /* fallback */ }
+        }
+        return this.classifications;
+    }
+
     getStats() { return { ...this.stats, total: this.classifications.length }; }
 }
 

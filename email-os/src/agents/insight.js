@@ -4,13 +4,15 @@
  * Novel Pattern: thread-intelligence
  * Model threads as living entities with velocity, temperature, and trajectory.
  * 
- * Pattern: anticipation-loop-engagement (franchise-os → email-os)
- * "This thread is heating up" creates an open loop.
+ * Persistence: PostgreSQL via Drizzle ORM
  * 
- * Wisdom Question: "What story are these threads telling together?"
+ * Wisdom Question: "What story does this thread tell across time?"
  */
 
 import bus from '../bus.js';
+import { db, isDbAvailable } from '../db/db.js';
+import { threads as threadsTable, insights as insightsTable } from '../db/schema.js';
+import { eq, desc } from 'drizzle-orm';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -22,244 +24,232 @@ const DATA_DIR = join(ROOT, 'data');
 
 class InsightAgent {
     constructor() {
-        this.threads = new Map();   // threadId → thread intelligence
-        this.insights = this.loadInsights();
+        this.threads = new Map();
+        this.insights = [];
+    }
+
+    async init() {
+        this.insights = await this._loadInsights();
     }
 
     /**
      * Update thread intelligence with a new email
-     * @param {object} email - Normalized email
-     * @param {object} classification - Zone classification
      */
-    trackThread(email, classification) {
+    async trackThread(email, classification) {
         const threadId = email.threadId;
+        if (!threadId) return null;
 
-        if (!this.threads.has(threadId)) {
-            this.threads.set(threadId, {
+        let thread = this.threads.get(threadId);
+        if (!thread) {
+            thread = {
                 threadId,
-                subject: email.subject,
+                subject: email.subject || '(no subject)',
                 participants: new Set(),
                 messages: [],
-                velocity: 0,        // replies per day
-                temperature: 50,     // 0-100 engagement heat
-                trajectory: 'stable', // rising, falling, stable
                 zones: [],
-                firstSeen: email.date,
-                lastSeen: email.date
-            });
+                participantCount: 0,
+                messageCount: 0,
+                velocity: 0,
+                temperature: 0,
+                trajectory: 'new',
+                firstMessageAt: email.date || new Date().toISOString(),
+                lastMessageAt: email.date || new Date().toISOString()
+            };
+            this.threads.set(threadId, thread);
         }
 
-        const thread = this.threads.get(threadId);
-        thread.participants.add(email.from?.email);
+        // Update thread data
+        if (email.from?.email) thread.participants.add(email.from.email);
         thread.messages.push({
             id: email.id,
-            from: email.from,
-            date: email.date,
+            from: email.from?.email,
             zone: classification.zone,
-            score: classification.score
+            date: email.date || new Date().toISOString()
         });
         thread.zones.push(classification.zone);
-        thread.lastSeen = email.date;
+        thread.lastMessageAt = email.date || new Date().toISOString();
+        thread.participantCount = thread.participants.size;
+        thread.messageCount = thread.messages.length;
 
-        // Recalculate metrics
+        // Calculate intelligence
         this.updateVelocity(thread);
         this.updateTemperature(thread);
         this.updateTrajectory(thread);
 
-        bus.publish('insight', 'thread.updated', {
-            threadId,
-            velocity: thread.velocity,
-            temperature: thread.temperature,
-            trajectory: thread.trajectory,
-            messageCount: thread.messages.length
-        });
+        // Persist to DB
+        if (isDbAvailable()) {
+            try {
+                await db.insert(threadsTable).values({
+                    threadId: thread.threadId,
+                    subject: thread.subject,
+                    participantCount: thread.participantCount,
+                    messageCount: thread.messageCount,
+                    velocity: thread.velocity,
+                    temperature: thread.temperature,
+                    trajectory: thread.trajectory,
+                    zonesSeen: [...thread.zones],
+                    participants: [...thread.participants],
+                    firstMessageAt: new Date(thread.firstMessageAt),
+                    lastMessageAt: new Date(thread.lastMessageAt),
+                }).onConflictDoUpdate({
+                    target: threadsTable.threadId,
+                    set: {
+                        participantCount: thread.participantCount,
+                        messageCount: thread.messageCount,
+                        velocity: thread.velocity,
+                        temperature: thread.temperature,
+                        trajectory: thread.trajectory,
+                        zonesSeen: [...thread.zones],
+                        participants: [...thread.participants],
+                        lastMessageAt: new Date(thread.lastMessageAt),
+                        updatedAt: new Date(),
+                    }
+                });
+            } catch (err) {
+                console.warn(`   ⚠️  DB thread upsert: ${err.message}`);
+            }
+        }
 
         // Check for insight triggers
-        this.checkInsightTriggers(thread);
+        await this.checkInsightTriggers(thread);
+
+        bus.publish('insight', 'thread.updated', {
+            threadId, messageCount: thread.messageCount,
+            velocity: thread.velocity, temperature: thread.temperature,
+            trajectory: thread.trajectory
+        });
 
         return thread;
     }
 
-    /**
-     * Calculate reply velocity (messages per day)
-     */
     updateVelocity(thread) {
-        if (thread.messages.length < 2) {
-            thread.velocity = 0;
-            return;
-        }
-
-        const first = new Date(thread.firstSeen);
-        const last = new Date(thread.lastSeen);
-        const days = Math.max(1, (last - first) / 86400000);
-        thread.velocity = Math.round((thread.messages.length / days) * 10) / 10;
+        if (thread.messages.length < 2) { thread.velocity = 0; return; }
+        const dates = thread.messages.map(m => new Date(m.date)).sort((a, b) => a - b);
+        const span = (dates[dates.length - 1] - dates[0]) / 86400000;
+        thread.velocity = span > 0 ? Math.round((thread.messages.length / span) * 100) / 100 : 0;
     }
 
-    /**
-     * Calculate thread temperature (engagement heat)
-     */
     updateTemperature(thread) {
-        let temp = 50; // baseline
+        let temp = 0;
+        temp += Math.min(thread.messages.length * 10, 30);
+        temp += Math.min(thread.participantCount * 10, 20);
+        temp += thread.velocity * 5;
 
-        // More participants = hotter
-        temp += Math.min(thread.participants.size * 5, 20);
+        const redCount = thread.zones.filter(z => z === 'red').length;
+        const yellowCount = thread.zones.filter(z => z === 'yellow').length;
+        temp += redCount * 15;
+        temp += yellowCount * 5;
 
-        // More messages = hotter
-        temp += Math.min(thread.messages.length * 3, 15);
+        const lastMsg = new Date(thread.lastMessageAt);
+        const hoursSince = (Date.now() - lastMsg) / 3600000;
+        if (hoursSince < 2) temp += 20;
+        else if (hoursSince < 24) temp += 10;
+        else if (hoursSince > 168) temp -= 20;
 
-        // High velocity = hotter
-        temp += Math.min(thread.velocity * 5, 15);
-
-        // Recent red zones = much hotter
-        const recentZones = thread.zones.slice(-3);
-        for (const zone of recentZones) {
-            if (zone === 'red') temp += 10;
-            if (zone === 'yellow') temp += 3;
-        }
-
-        // Decay for old threads
-        const hoursSinceLastMessage = (Date.now() - new Date(thread.lastSeen)) / 3600000;
-        temp -= Math.min(hoursSinceLastMessage * 0.5, 30);
-
-        thread.temperature = Math.max(0, Math.min(100, Math.round(temp)));
+        thread.temperature = Math.max(0, Math.min(100, temp));
     }
 
-    /**
-     * Determine thread trajectory
-     */
     updateTrajectory(thread) {
-        if (thread.messages.length < 3) {
-            thread.trajectory = 'stable';
-            return;
-        }
+        if (thread.messages.length < 3) { thread.trajectory = 'new'; return; }
+        const recentZones = thread.zones.slice(-3);
+        const weights = { red: 3, yellow: 2, green: 1 };
+        const recentHeat = recentZones.reduce((sum, z) => sum + (weights[z] || 0), 0) / 3;
+        const histHeat = thread.zones.reduce((sum, z) => sum + (weights[z] || 0), 0) / thread.zones.length;
 
-        // Compare recent vs older zone scores
-        const recent = thread.messages.slice(-3).map(m => m.score);
-        const older = thread.messages.slice(-6, -3).map(m => m.score);
-
-        if (older.length === 0) {
-            thread.trajectory = 'stable';
-            return;
-        }
-
-        const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
-        const olderAvg = older.reduce((a, b) => a + b, 0) / older.length;
-        const delta = recentAvg - olderAvg;
-
-        if (delta > 10) thread.trajectory = 'rising';
-        else if (delta < -10) thread.trajectory = 'falling';
-        else thread.trajectory = 'stable';
+        if (recentHeat > histHeat + 0.5) thread.trajectory = 'heating';
+        else if (recentHeat < histHeat - 0.5) thread.trajectory = 'cooling';
+        else thread.trajectory = 'steady';
     }
 
-    /**
-     * Check for insight triggers and generate insights
-     */
-    checkInsightTriggers(thread) {
-        // Hot thread alert
-        if (thread.temperature > 80 && thread.trajectory === 'rising') {
-            this.generateInsight({
-                type: 'hot-thread',
-                threadId: thread.threadId,
-                subject: thread.subject,
-                message: `🔥 Thread "${thread.subject}" is heating up (${thread.temperature}°, ${thread.velocity} msgs/day, ${thread.participants.size} participants)`,
-                priority: 'high'
+    async checkInsightTriggers(thread) {
+        if (thread.velocity > 3) {
+            await this.generateInsight({
+                threadId: thread.threadId, type: 'velocity-spike',
+                message: `Thread "${thread.subject}" has high velocity (${thread.velocity} msgs/day)`,
+                severity: 'warning', data: { velocity: thread.velocity }
             });
         }
-
-        // Multi-participant convergence
-        if (thread.participants.size >= 4) {
-            this.generateInsight({
-                type: 'convergence',
-                threadId: thread.threadId,
-                subject: thread.subject,
-                message: `👥 ${thread.participants.size} people are now in thread "${thread.subject}" — consider scheduling a call`,
-                priority: 'medium'
+        if (thread.temperature > 80) {
+            await this.generateInsight({
+                threadId: thread.threadId, type: 'hot-thread',
+                message: `Thread "${thread.subject}" is very hot (temp: ${thread.temperature})`,
+                severity: 'critical', data: { temperature: thread.temperature }
             });
         }
-
-        // Stalling thread (was hot, now cooling)
-        if (thread.temperature < 30 && thread.messages.length >= 5 && thread.trajectory === 'falling') {
-            this.generateInsight({
-                type: 'stalling',
-                threadId: thread.threadId,
-                subject: thread.subject,
-                message: `⏸️ Thread "${thread.subject}" has stalled (${thread.messages.length} msgs, now cooling) — needs a nudge?`,
-                priority: 'low'
+        if (thread.participantCount >= 5) {
+            await this.generateInsight({
+                threadId: thread.threadId, type: 'multi-party',
+                message: `Thread "${thread.subject}" has ${thread.participantCount} participants`,
+                severity: 'info', data: { participants: [...thread.participants] }
             });
         }
     }
 
-    /**
-     * Generate and store an insight
-     */
-    generateInsight(insight) {
-        const full = {
-            ...insight,
-            id: `i${this.insights.length + 1}`,
-            timestamp: new Date().toISOString()
-        };
-
-        // Deduplicate: don't repeat the same insight for the same thread within 24h
-        const recent = this.insights.find(i =>
-            i.type === insight.type &&
-            i.threadId === insight.threadId &&
-            (Date.now() - new Date(i.timestamp)) < 86400000
-        );
-        if (recent) return;
-
+    async generateInsight(insight) {
+        const full = { ...insight, createdAt: new Date().toISOString() };
         this.insights.push(full);
-        this.saveInsights();
+
+        if (isDbAvailable()) {
+            try {
+                await db.insert(insightsTable).values({
+                    threadId: insight.threadId,
+                    type: insight.type,
+                    message: insight.message,
+                    severity: insight.severity || 'info',
+                    data: insight.data || {},
+                });
+            } catch (err) {
+                console.warn(`   ⚠️  DB insight insert: ${err.message}`);
+                this._saveToFile();
+            }
+        } else {
+            this._saveToFile();
+        }
 
         bus.publish('insight', 'insight.generated', {
-            insightId: full.id,
-            type: full.type,
-            priority: full.priority
+            type: insight.type, severity: insight.severity, threadId: insight.threadId
         });
     }
 
-    /**
-     * Get thread intelligence summary
-     */
-    getHotThreads(limit = 5) {
+    async getHotThreads(limit = 5) {
+        if (isDbAvailable()) {
+            try {
+                return await db.select().from(threadsTable)
+                    .orderBy(desc(threadsTable.temperature))
+                    .limit(limit);
+            } catch { /* fallback */ }
+        }
         return [...this.threads.values()]
             .sort((a, b) => b.temperature - a.temperature)
-            .slice(0, limit)
-            .map(t => ({
-                threadId: t.threadId,
-                subject: t.subject,
-                temperature: t.temperature,
-                velocity: t.velocity,
-                trajectory: t.trajectory,
-                participants: t.participants.size,
-                messages: t.messages.length
-            }));
+            .slice(0, limit);
     }
 
-    /**
-     * Get recent insights
-     */
-    getRecentInsights(limit = 10) {
+    async getRecentInsights(limit = 10) {
+        if (isDbAvailable()) {
+            try {
+                return await db.select().from(insightsTable)
+                    .orderBy(desc(insightsTable.createdAt))
+                    .limit(limit);
+            } catch { /* fallback */ }
+        }
         return this.insights.slice(-limit);
     }
 
-    // --- Persistence ---
-
-    loadInsights() {
-        const file = join(DATA_DIR, 'insights.json');
-        if (existsSync(file)) {
-            try {
-                return JSON.parse(readFileSync(file, 'utf8'));
-            } catch {
-                return [];
-            }
+    async _loadInsights() {
+        if (isDbAvailable()) {
+            try { return await db.select().from(insightsTable); }
+            catch { /* fallback */ }
+        }
+        const insightFile = join(DATA_DIR, 'insights.json');
+        if (existsSync(insightFile)) {
+            try { return JSON.parse(readFileSync(insightFile, 'utf8')); }
+            catch { return []; }
         }
         return [];
     }
 
-    saveInsights() {
-        if (!existsSync(DATA_DIR)) {
-            mkdirSync(DATA_DIR, { recursive: true });
-        }
+    _saveToFile() {
+        if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
         writeFileSync(join(DATA_DIR, 'insights.json'), JSON.stringify(this.insights, null, 2));
     }
 }
