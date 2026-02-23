@@ -57,6 +57,11 @@
         <span class="tab-icon">📊</span>
         <span class="tab-label">Pitch</span>
       </button>
+      <button class="tab-btn" data-tab="inbox">
+        <span class="tab-icon">📧</span>
+        <span class="tab-label">Inbox</span>
+        <span class="tab-badge-new">FREE</span>
+      </button>
     </nav>
 
     <!-- ============== PANEL 1: DEPLOY ============== -->
@@ -439,11 +444,120 @@
 
   </div>
 
+    <!-- ============== PANEL 6: INBOX HEALTH CHECK ============== -->
+    <section class="panel" id="panel-inbox">
+      
+      <!-- Input State -->
+      <div id="inbox-input-state">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📧 Inbox Health Check</span>
+            <span class="card-badge badge-green">FREE</span>
+          </div>
+          <div class="inbox-hero">
+            <h2 class="inbox-headline">你的收件匣裡藏著多少你不知道的報價單？</h2>
+            <p class="inbox-sub">Paste your email subjects below. We'll tell you what you're missing.</p>
+          </div>
+          <div class="inbox-input-area">
+            <textarea id="inbox-subjects" rows="12" placeholder="貼上你的 email 主旨（每行一封）&#10;&#10;例如：&#10;RE: RFQ-2026-0892 CNC精密零件報價&#10;[通知] 台灣銀行信用卡帳單&#10;ISO 9001 年度複審通知 — 到期日 2026/03/15&#10;Fwd: 半導體客戶急件 — 需 48hr 回覆&#10;LINE 官方帳號月結報表&#10;RE: RE: RE: 模具修改確認&#10;..."></textarea>
+            <div class="inbox-input-footer">
+              <span class="inbox-count"><span id="inbox-line-count">0</span> emails detected</span>
+              <button id="inbox-analyze-btn" class="btn-primary-glow" disabled>
+                🔍 免費分析
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="inbox-loading-state" style="display:none">
+        <div class="card">
+          <div class="inbox-loading">
+            <div class="inbox-spinner"></div>
+            <h3>MECHA AI 正在分析你的收件匣...</h3>
+            <p id="inbox-loading-status">分類中 — 辨識 RFQ、合規、營運、垃圾...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result State -->
+      <div id="inbox-result-state" style="display:none">
+        
+        <!-- Score Card -->
+        <div class="card inbox-score-card">
+          <div class="inbox-score-header">
+            <div class="inbox-score-circle" id="inbox-score-circle">
+              <span class="inbox-score-number" id="inbox-score-number">--</span>
+              <span class="inbox-score-label">/ 100</span>
+            </div>
+            <div class="inbox-score-meta">
+              <h2>你的收件匣健康分數</h2>
+              <p id="inbox-score-verdict" class="inbox-verdict">分析中...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts (Free — visible) -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🚨 Critical Alerts</span>
+            <span class="card-badge badge-red">需要行動</span>
+          </div>
+          <div id="inbox-alerts"></div>
+        </div>
+
+        <!-- Risk Summary -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">💰 Revenue at Risk</span>
+          </div>
+          <div class="inbox-risk-bar">
+            <div class="inbox-risk-amount" id="inbox-risk-amount">NT$ 0</div>
+            <div class="inbox-risk-detail" id="inbox-risk-detail">基於未回覆詢價 + 到期合規的預估損失</div>
+          </div>
+        </div>
+
+        <!-- Breakdown (partially blurred for free) -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📊 Category Breakdown</span>
+          </div>
+          <div id="inbox-breakdown"></div>
+        </div>
+
+        <!-- Pro Upsell -->
+        <div class="card inbox-upsell-card">
+          <div class="inbox-upsell">
+            <h3>🔓 解鎖完整分析</h3>
+            <div class="inbox-upsell-features">
+              <div class="inbox-upsell-item">✓ RFQ 商業價值排序 + 建議回覆</div>
+              <div class="inbox-upsell-item">✓ 合規到期倒數看板</div>
+              <div class="inbox-upsell-item">✓ Gmail 過濾規則（一鍵匯入）</div>
+              <div class="inbox-upsell-item">✓ 每週自動監控 + WhatsApp 通知</div>
+            </div>
+            <button id="inbox-upgrade-btn" class="btn-upgrade-glow">
+              解鎖完整分析 — $29/月
+            </button>
+            <p class="inbox-upsell-note">7 天免費試用 · 隨時取消</p>
+          </div>
+        </div>
+
+        <!-- Try Again -->
+        <div style="text-align:center; margin-top:16px">
+          <button id="inbox-reset-btn" class="btn-ghost">← 重新分析</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <script src="email-bridge.js"></script>
   <script src="app.js"></script>
+  <script src="inbox-health.js"></script>
 
   <!-- MECHA AI Chat Widget -->
   <script>
