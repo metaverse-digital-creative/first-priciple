@@ -1,0 +1,17 @@
+{
+  "_demo": {
+    "tier": "demo",
+    "limit": 10,
+    "name": "Anonymous"
+  },
+  "mecha-free-beta-2026": {
+    "tier": "free",
+    "limit": 50,
+    "name": "Beta Tester"
+  },
+  "mecha-pro-ck-001": {
+    "tier": "pro",
+    "limit": 999999,
+    "name": "CK (Admin)"
+  }
+}

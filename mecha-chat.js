@@ -10,8 +10,9 @@
   'use strict';
 
   const DEFAULT_CONFIG = {
-    endpoint: 'http://localhost:18789',
+    endpoint: 'http://localhost:18800',
     agentId: 'mecha',
+    apiKey: null,  // Set for higher limits. null = demo (10 msg/day)
     title: 'MECHA AI',
     subtitle: 'First Principles • Deploy • Earn',
     placeholder: 'Ask anything...',
@@ -327,9 +328,12 @@
     sendBtn.disabled = true;
 
     try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (config.apiKey) headers['X-API-Key'] = config.apiKey;
+
       const response = await fetch(`${config.endpoint}/api/v1/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           agentId: config.agentId,
           sessionId: sessionId,
@@ -339,12 +343,23 @@
 
       removeTyping();
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+
+      if (response.status === 429) {
+        addMessage('agent', `⚡ Daily limit reached (${data.limit} messages).\n\n${data.tier === 'demo' ? '**Get a free API key for 5x more messages →** [Upgrade](https://metaverse-digital-creative.github.io/pricing)' : '**Upgrade to Pro for unlimited →** [Upgrade](https://metaverse-digital-creative.github.io/pricing)'}`);
+        return;
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+
       addMessage('agent', data.reply || data.message || 'No response');
+      
+      // Show usage hint when running low
+      if (data.usage && data.usage.remaining <= 3 && data.usage.remaining > 0) {
+        addMessage('agent', `_${data.usage.remaining} messages remaining today. [Get more →](https://metaverse-digital-creative.github.io/pricing)_`);
+      }
     } catch (err) {
       removeTyping();
       addMessage('agent', `⚠️ 連線失敗 — 請確認 MECHA endpoint 設定。\n\nError: ${err.message}`);
