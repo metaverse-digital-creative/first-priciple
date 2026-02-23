@@ -17,6 +17,7 @@ node_modules/
 *.pem
 token.json
 credentials.json
+.tokens/
 
 # Logs
 *.log

@@ -104,7 +104,7 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
         // 2. Classify
         stateMachine.transition(STATES.PROCESSING);
         console.log('🏷️  Classifying by zone...\n');
-        const classified = await classify.batchClassify(emails);
+        const classified = classify.batchClassify(emails);
 
         // Print zone summary
         const zoneEmoji = { red: '🔴', yellow: '🟡', green: '🟢' };
@@ -149,10 +149,6 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
         }
 
         // 4. Mirror review
-        // Classification stats
-        const classifyStats = classify.getStats();
-        console.log(`\n   📊 Classify: ${classifyStats.keyword} keyword / ${classifyStats.llm} LLM / ${classifyStats.fallback} fallback`);
-
         console.log('\n🪞 Mirror review...');
         const review = mirror.reviewClassifications(classify.getLog());
         if (review.feedback.length > 0) {
@@ -192,7 +188,7 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
 async function runTriage(ingest, classify) {
     console.log('🏷️  Quick triage — classifying unread...\n');
     const emails = await ingest.run({ query: 'is:inbox is:unread', maxResults: 20 });
-    const classified = await classify.batchClassify(emails);
+    const classified = classify.batchClassify(emails);
 
     const zoneEmoji = { red: '🔴', yellow: '🟡', green: '🟢' };
     for (const [zone, items] of Object.entries(classified)) {
