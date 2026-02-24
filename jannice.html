@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jannice Lee — Strategy Report</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0c10;color:#e8eaf0;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.gate{text-align:center;padding:48px;max-width:420px}
+.gate h1{font-size:1.6rem;margin-bottom:8px}
+.gate p{color:#9ca3af;margin-bottom:32px;font-size:.95rem}
+.gate input{width:100%;padding:14px 20px;border-radius:12px;border:1px solid #2a2f3d;background:#12151c;color:#e8eaf0;font-size:1rem;margin-bottom:16px;outline:none;transition:border .2s}
+.gate input:focus{border-color:#6c63ff}
+.gate button{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#6c63ff,#a78bfa);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+.gate button:hover{opacity:.9}
+.gate .error{color:#fb7185;font-size:.85rem;margin-top:8px;display:none}
+.gate .emoji{font-size:3rem;margin-bottom:20px}
+</style>
+</head>
+<body>
+<div class="gate" id="gate">
+<div class="emoji">🚀</div>
+<h1>Jannice Lee</h1>
+<p>First-Principles Growth Strategy Report</p>
+<input type="password" id="pw" placeholder="輸入密碼 / Enter password" autofocus>
+<button onclick="unlock()">解鎖報告 Unlock</button>
+<div class="error" id="err">密碼錯誤 Wrong password</div>
+</div>
+<iframe id="report" style="display:none;width:100%;height:100vh;border:none;position:fixed;top:0;left:0"></iframe>
+<script>
+function unlock(){
+var p=document.getElementById('pw').value;
+if(p==='jannice2026'){
+document.getElementById('gate').style.display='none';
+var f=document.getElementById('report');
+f.style.display='block';
+f.src='jannice-strategy-report.html';
+}else{
+document.getElementById('err').style.display='block';
+setTimeout(function(){document.getElementById('err').style.display='none'},2000);
+}
+}
+document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')unlock()});
+</script>
+</body>
+</html>

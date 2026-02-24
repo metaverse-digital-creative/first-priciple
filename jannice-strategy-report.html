@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jannice Lee — 台灣中小企業風險基礎設施 Strategy V2</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg: #06080d;
+            --surface: #0d1117;
+            --surface2: #161b22;
+            --surface3: #21262d;
+            --accent: #7c6aef;
+            --accent2: #a78bfa;
+            --accent3: #c4b5fd;
+            --gold: #f5a623;
+            --gold2: #fbbf24;
+            --gold3: #fde68a;
+            --teal: #0ea5e9;
+            --teal2: #38bdf8;
+            --teal3: #7dd3fc;
+            --emerald: #10b981;
+            --emerald2: #34d399;
+            --rose: #f43f5e;
+            --rose2: #fb7185;
+            --orange: #f97316;
+            --orange2: #fb923c;
+            --text: #f0f6fc;
+            --text2: #8b949e;
+            --text3: #484f58;
+            --border: #21262d;
+            --border2: #30363d;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 28px
+        }
+
+        /* Navigation */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 99;
+            backdrop-filter: blur(20px);
+            background: rgba(6, 8, 13, .8);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0
+        }
+
+        .topbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .topbar-brand {
+            font-weight: 800;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .topbar-brand span {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .topbar-label {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: rgba(124, 106, 239, .1);
+            color: var(--accent2);
+            border: 1px solid rgba(124, 106, 239, .2);
+            font-weight: 600;
+            letter-spacing: .5px
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 60px
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            background: radial-gradient(circle, rgba(124, 106, 239, .08), transparent 70%);
+            animation: float 15s ease-in-out infinite
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(245, 166, 35, .05), transparent 70%);
+            animation: float 20s ease-in-out infinite reverse
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0)
+            }
+
+            50% {
+                transform: translate(30px, -20px)
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            width: 100%
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 32px
+        }
+
+        .hero-eyebrow .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--emerald);
+            animation: blink 2s infinite
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        .hero-eyebrow .label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text2)
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1.12;
+            margin-bottom: 28px;
+            letter-spacing: -.03em
+        }
+
+        .grad-purple {
+            background: linear-gradient(135deg, var(--accent), var(--accent3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .grad-gold {
+            background: linear-gradient(135deg, var(--gold), var(--gold3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .grad-teal {
+            background: linear-gradient(135deg, var(--teal), var(--teal3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .hero-sub {
+            font-size: 1.15rem;
+            color: var(--text2);
+            max-width: 620px;
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.8
+        }
+
+        .hero-intersection {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 680px
+        }
+
+        @media(max-width:600px) {
+            .hero-intersection {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        .hi-item {
+            padding: 16px;
+            border-radius: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all .3s
+        }
+
+        .hi-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px)
+        }
+
+        .hi-item .emoji {
+            font-size: 24px;
+            margin-bottom: 6px
+        }
+
+        .hi-item .hi-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text2)
+        }
+
+        .hi-item .hi-val {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 2px
+        }
+
+        /* Sections */
+        section {
+            padding: 100px 0
+        }
+
+        .stag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 20px
+        }
+
+        .stag-p {
+            background: rgba(124, 106, 239, .08);
+            color: var(--accent2);
+            border: 1px solid rgba(124, 106, 239, .15)
+        }
+
+        .stag-g {
+            background: rgba(245, 166, 35, .08);
+            color: var(--gold2);
+            border: 1px solid rgba(245, 166, 35, .15)
+        }
+
+        .stag-t {
+            background: rgba(14, 165, 233, .08);
+            color: var(--teal2);
+            border: 1px solid rgba(14, 165, 233, .15)
+        }
+
+        .stag-e {
+            background: rgba(16, 185, 129, .08);
+            color: var(--emerald2);
+            border: 1px solid rgba(16, 185, 129, .15)
+        }
+
+        .stag-r {
+            background: rgba(244, 63, 94, .08);
+            color: var(--rose2);
+            border: 1px solid rgba(244, 63, 94, .15)
+        }
+
+        .sh {
+            font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 14px;
+            letter-spacing: -.02em
+        }
+
+        .sd {
+            font-size: 1rem;
+            color: var(--text2);
+            max-width: 640px;
+            margin-bottom: 48px;
+            font-weight: 300;
+            line-height: 1.8
+        }
+
+        /* Cards */
+        .cg {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px
+        }
+
+        .cd {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px;
+            transition: all .3s
+        }
+
+        .cd:hover {
+            border-color: var(--border2);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .3)
+        }
+
+        .cd-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px
+        }
+
+        .cd h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .cd p {
+            font-size: .88rem;
+            color: var(--text2);
+            line-height: 1.7
+        }
+
+        .cd .tag-inline {
+            display: inline-flex;
+            margin-top: 10px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        /* First Principles Block */
+        .fp-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 48px;
+            margin: 48px 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .fp-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--gold), var(--teal), var(--emerald))
+        }
+
+        .fp-q {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: var(--text2);
+            margin-bottom: 12px;
+            font-style: italic
+        }
+
+        .fp-a {
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.6
+        }
+
+        .fp-divider {
+            width: 60px;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            margin: 24px 0
+        }
+
+        /* Intersection Diagram */
+        .ix-diagram {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 48px
+        }
+
+        @media(max-width:768px) {
+            .ix-diagram {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .ix-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 32px;
+            position: relative
+        }
+
+        .ix-card.core {
+            border-color: rgba(124, 106, 239, .3);
+            background: linear-gradient(135deg, rgba(124, 106, 239, .03), rgba(245, 166, 35, .02))
+        }
+
+        .ix-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .ix-card p {
+            font-size: .88rem;
+            color: var(--text2);
+            line-height: 1.7;
+            margin-bottom: 12px
+        }
+
+        .ix-card ul {
+            list-style: none
+        }
+
+        .ix-card li {
+            padding: 6px 0;
+            font-size: .88rem;
+            color: var(--text2);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.6
+        }
+
+        .ix-card li::before {
+            content: '›';
+            color: var(--accent2);
+            font-weight: 800;
+            font-size: 1.1rem;
+            flex-shrink: 0
+        }
+
+        .ix-revenue {
+            display: inline-flex;
+            margin-top: 12px;
+            padding: 4px 14px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(16, 185, 129, .08);
+            color: var(--emerald2);
+            border: 1px solid rgba(16, 185, 129, .15)
+        }
+
+        /* Flow / Steps */
+        .flow {
+            margin-top: 48px
+        }
+
+        .flow-item {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 20px;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .flow-item:last-child {
+            border-bottom: none
+        }
+
+        .flow-n {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem
+        }
+
+        .fn1 {
+            background: rgba(124, 106, 239, .1);
+            color: var(--accent2)
+        }
+
+        .fn2 {
+            background: rgba(245, 166, 35, .1);
+            color: var(--gold2)
+        }
+
+        .fn3 {
+            background: rgba(14, 165, 233, .1);
+            color: var(--teal2)
+        }
+
+        .fn4 {
+            background: rgba(16, 185, 129, .1);
+            color: var(--emerald2)
+        }
+
+        .fn5 {
+            background: rgba(244, 63, 94, .1);
+            color: var(--rose2)
+        }
+
+        .flow-body h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .flow-body p {
+            font-size: .88rem;
+            color: var(--text2);
+            line-height: 1.7
+        }
+
+        .flow-body .metric {
+            display: inline-flex;
+            margin-top: 8px;
+            padding: 3px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(124, 106, 239, .06);
+            color: var(--accent3);
+            border: 1px solid rgba(124, 106, 239, .12)
+        }
+
+        /* Compare Table */
+        .ctb {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 40px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border)
+        }
+
+        .ctb th,
+        .ctb td {
+            padding: 16px 20px;
+            text-align: left;
+            font-size: .85rem;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .ctb th {
+            background: var(--surface2);
+            font-weight: 700;
+            font-size: .75rem;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--text3)
+        }
+
+        .ctb td {
+            background: var(--surface)
+        }
+
+        .ctb tr:last-child td {
+            border-bottom: none
+        }
+
+        .ctb .old {
+            color: var(--rose2);
+            opacity: .5;
+            text-decoration: line-through
+        }
+
+        .ctb .new {
+            color: var(--emerald2);
+            font-weight: 600
+        }
+
+        /* Timeline */
+        .tl {
+            position: relative;
+            margin-top: 48px;
+            padding-left: 36px
+        }
+
+        .tl::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), var(--gold), var(--teal), var(--emerald))
+        }
+
+        .tl-item {
+            position: relative;
+            padding: 0 0 36px 28px
+        }
+
+        .tl-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            background: var(--bg)
+        }
+
+        .tl-item:nth-child(2)::before {
+            border-color: var(--gold)
+        }
+
+        .tl-item:nth-child(3)::before {
+            border-color: var(--teal)
+        }
+
+        .tl-item:nth-child(4)::before {
+            border-color: var(--emerald)
+        }
+
+        .tl-item h4 {
+            font-size: .95rem;
+            font-weight: 700
+        }
+
+        .tl-time {
+            font-size: 11px;
+            color: var(--text3);
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 6px
+        }
+
+        .tl-item p {
+            font-size: .85rem;
+            color: var(--text2);
+            line-height: 1.7
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 120px 0
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, rgba(124, 106, 239, .06), rgba(245, 166, 35, .04));
+            border: 1px solid rgba(124, 106, 239, .15);
+            border-radius: 24px;
+            padding: 56px 40px;
+            max-width: 720px;
+            margin: 0 auto
+        }
+
+        .cta-box h2 {
+            font-size: clamp(1.5rem, 2.8vw, 2rem);
+            font-weight: 800;
+            margin-bottom: 14px
+        }
+
+        .cta-box p {
+            color: var(--text2);
+            margin-bottom: 28px;
+            font-size: .95rem
+        }
+
+        .cta-3 {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            text-align: left
+        }
+
+        .cta-3>div {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            flex: 1;
+            min-width: 180px
+        }
+
+        .cta-3 .sn {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: .5px
+        }
+
+        .cta-3 h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .cta-3 p {
+            font-size: .78rem;
+            color: var(--text3);
+            line-height: 1.5
+        }
+
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 36px 0;
+            text-align: center
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: var(--text3)
+        }
+
+        .footer a {
+            color: var(--accent2);
+            text-decoration: none
+        }
+
+        @media(max-width:600px) {
+            .cta-3 {
+                flex-direction: column
+            }
+
+            .cg {
+                grid-template-columns: 1fr
+            }
+
+            .ix-diagram {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="topbar">
+        <div class="container topbar-inner">
+            <div class="topbar-brand">🚀 <span>ANTIGRAVITY</span> × JANNICE LEE</div>
+            <div class="topbar-label">STRATEGY V2 · FIRST PRINCIPLES</div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-eyebrow">
+                    <div class="dot"></div>
+                    <div class="label">First-Principles Strategy Report · V2</div>
+                </div>
+                <h1>
+                    台灣中小企業<br><span class="grad-purple">風險基礎設施</span><br>
+                    <span class="grad-gold">不只是 ESG 顧問</span>
+                </h1>
+                <p class="hero-sub">
+                    Jannice Lee 不是一個 ESG 顧問。她是坐在四個產業交叉口的稀有物種——保險經紀、ESG合規、AI自動化、國際貿易。第一性原理告訴我們：不要只看她的頭銜，要看她站在哪個「交叉口」。
+                </p>
+                <div class="hero-intersection">
+                    <div class="hi-item">
+                        <div class="emoji">🛡️</div>
+                        <div class="hi-label">保險經紀</div>
+                        <div class="hi-val">已知風險</div>
+                    </div>
+                    <div class="hi-item">
+                        <div class="emoji">🌱</div>
+                        <div class="hi-label">ESG 顧問</div>
+                        <div class="hi-val">監管風險</div>
+                    </div>
+                    <div class="hi-item">
+                        <div class="emoji">🤖</div>
+                        <div class="hi-label">AI / Robotics</div>
+                        <div class="hi-val">營運風險</div>
+                    </div>
+                    <div class="hi-item">
+                        <div class="emoji">🌏</div>
+                        <div class="hi-label">國際貿易</div>
+                        <div class="hi-val">跨境風險</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FIRST PRINCIPLE -->
+    <section>
+        <div class="container">
+            <span class="stag stag-p">第一性原理 FIRST PRINCIPLE</span>
+            <h2 class="sh">從原子層級重新拆解</h2>
+            <p class="sd">忘掉所有頭銜。拆解到最底層，Jannice 真正在做什麼？</p>
+
+            <div class="fp-block">
+                <div class="fp-q">「如果我們把 Jannice 所有的專業能力全部拆開，再從零重新組裝，最有價值的組合是什麼？」</div>
+                <div class="fp-divider"></div>
+                <div class="fp-a">
+                    一個人、一層信任關係、四條風險覆蓋——<br>
+                    <span class="grad-purple">保險</span>覆蓋已知風險、<span class="grad-gold">ESG</span>覆蓋監管風險、<span
+                        class="grad-teal">AI</span>覆蓋營運風險、<span class="grad-gold">貿易</span>覆蓋跨境風險。<br><br>
+                    這不是四份工作，而是一個<strong>風險基礎設施</strong>——<br>
+                    而它的護城河只有一個字：<span style="font-size:1.6em;font-weight:900" class="grad-purple">信</span>
+                </div>
+            </div>
+
+            <table class="ctb">
+                <thead>
+                    <tr>
+                        <th>維度</th>
+                        <th>舊思維 ✗</th>
+                        <th>第一性原理 ✓</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>她是誰</td>
+                        <td class="old">ESG 顧問（單一角色）</td>
+                        <td class="new">SME 風險基礎設施（交叉口）</td>
+                    </tr>
+                    <tr>
+                        <td>賣什麼</td>
+                        <td class="old">ESG 知識（折舊資產）</td>
+                        <td class="new">四合一風險覆蓋（增值資產）</td>
+                    </tr>
+                    <tr>
+                        <td>護城河</td>
+                        <td class="old">個人品牌（可模仿）</td>
+                        <td class="new">信任 × 保險數據 × 在地情報</td>
+                    </tr>
+                    <tr>
+                        <td>收費模式</td>
+                        <td class="old">小時費率（線性）</td>
+                        <td class="new">營收分潤（指數複利）</td>
+                    </tr>
+                    <tr>
+                        <td>冷啟動</td>
+                        <td class="old">從零開始找客戶</td>
+                        <td class="new">保險經紀客戶即 Day 1 信任圈</td>
+                    </tr>
+                    <tr>
+                        <td>技術壁壘</td>
+                        <td class="old">Word 報告（可被AI取代）</td>
+                        <td class="new">即時風險儀表板（PyTorch+Grafana）</td>
+                    </tr>
+                    <tr>
+                        <td>在地優勢</td>
+                        <td class="old">線上內容（全球競爭）</td>
+                        <td class="new">屏東 × 南台灣 SME（晚餐圓桌）</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- PILLAR 1: INTERSECTION -->
+    <section style="background:var(--surface)">
+        <div class="container">
+            <span class="stag stag-g">策略支柱一 THE INTERSECTION</span>
+            <h2 class="sh">四合一風險覆蓋<br><small style="font-size:.45em;color:var(--text3);font-weight:400">One Person, One
+                    Trust Layer, Four Risk Streams</small></h2>
+            <p class="sd">沒有其他人同時擁有保險經紀執照、ESG顧問資歷、AI技術能力和國際貿易經驗。這個交叉口就是 Jannice 的不可複製位置。</p>
+
+            <div class="ix-diagram">
+                <div class="ix-card core">
+                    <h3>🛡️ 保險經紀 → 已知風險</h3>
+                    <p>她已經在做的事。保險客戶 = Day 1 的信任圈。不需要冷啟動。</p>
+                    <ul>
+                        <li>每位保險客戶都是潛在的 ESG/風險管理客戶</li>
+                        <li>保險理賠數據 = 獨家風險信號（其他顧問沒有）</li>
+                        <li>客戶已經信任她處理「風險」→ 擴展到其他風險類型零摩擦</li>
+                    </ul>
+                    <span class="ix-revenue">💰 現有收入流 — 佣金制</span>
+                </div>
+                <div class="ix-card">
+                    <h3>🌱 ESG 合規 → 監管風險</h3>
+                    <p>永續治理 × 風險控管。讓老闆不再為法規苦惱。</p>
+                    <ul>
+                        <li>法規早期預警（她比客戶早 3-6 個月知道風向）</li>
+                        <li>地方創生結合 ESG — 南台灣獨特角度</li>
+                        <li>不做報告撰寫（可外包/AI化）→ 只做策略判斷</li>
+                    </ul>
+                    <span class="ix-revenue">💰 顧問費 + 營收分潤</span>
+                </div>
+                <div class="ix-card">
+                    <h3>🤖 AI / Robotics → 營運風險</h3>
+                    <p>PyTorch、TensorRT、Prometheus/Grafana — 報告中最大的隱藏武器。</p>
+                    <ul>
+                        <li>風險掃描不是 PDF 報告 → 是<strong>即時儀表板</strong></li>
+                        <li>保險數據 + ESG 信號 = 獨家風險評分模型</li>
+                        <li>自動化營運風險偵測 → 其他顧問做不到的技術壁壘</li>
+                    </ul>
+                    <span class="ix-revenue">💰 SaaS 訂閱 / 數據授權</span>
+                </div>
+                <div class="ix-card">
+                    <h3>🌏 國際貿易 → 跨境風險</h3>
+                    <p>關稅、供應鏈、碳邊境調整機制（CBAM）。</p>
+                    <ul>
+                        <li>南台灣出口導向 SME 最痛的點</li>
+                        <li>歐盟 CBAM 2026 全面實施 → 巨大需求窗口</li>
+                        <li>跨境合規 + ESG 的結合 → 藍海機會</li>
+                    </ul>
+                    <span class="ix-revenue">💰 專案費 + 長期風險監控</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PILLAR 2: TRUST NETWORK -->
+    <section>
+        <div class="container">
+            <span class="stag stag-p">策略支柱二 TRUST NETWORK</span>
+            <h2 class="sh">屏東晚餐圓桌<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Southern Taiwan
+                    SME Trust Circle</small></h2>
+            <p class="sd">南台灣 SME 是關係驅動的文化。月度圓桌不是會議室裡的正式會談——是晚餐＋啤酒＋真心話。這才是 Jannice 的主場。</p>
+
+            <div class="cg">
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(124,106,239,.1)">🍻</div>
+                    <h3>晚餐圓桌（不是會議室）</h3>
+                    <p>20-30 位 SME 老闆的私密網路。在地、面對面、有溫度。南台灣的信任建立方式不是 LinkedIn，是吃飯。月會 = 在地餐廳包廂，不是線上會議。</p>
+                    <div class="tag-inline" style="background:rgba(124,106,239,.06);color:var(--accent3)">年費
+                        NT$60,000-120,000/位</div>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(245,166,35,.1)">🔥</div>
+                    <h3>冷啟動 = 保險客戶</h3>
+                    <p><strong>她不需要從零開始。</strong>現有的保險經紀客戶就是 Day 1 信任圈。他們已經信任 Jannice 處理風險。從保險話題延伸到 ESG、營運、跨境——自然且無摩擦。
+                    </p>
+                    <div class="tag-inline" style="background:rgba(245,166,35,.06);color:var(--gold2)">Day 1 即有 8-15
+                        位種子成員</div>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(14,165,233,.1)">📡</div>
+                    <h3>風險信號情報網</h3>
+                    <p>圓桌不只是社交——它是情報網路。「我的 3 個客戶剛被標記 X 法規」「Y 供應鏈出問題了」→ 這種信號 Google 找不到、AI 生成不了。人際情報是最強壁壘。</p>
+                    <div class="tag-inline" style="background:rgba(14,165,233,.06);color:var(--teal2)">Bloomberg
+                        Terminal for 南台灣 SME</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PILLAR 3: REVENUE SHARE -->
+    <section style="background:var(--surface)">
+        <div class="container">
+            <span class="stag stag-t">策略支柱三 REVENUE SHARE</span>
+            <h2 class="sh">營收分潤取代顧問費<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Revenue Share,
+                    Not Equity — Less Friction, Same Economics</small></h2>
+            <p class="sd">
+                「股權」在台灣 SME 文化中是敏感詞。但「營收分潤」不是。同樣的經濟效果，零文化摩擦。從一個展示案例開始，用成功說話。
+            </p>
+
+            <div class="flow">
+                <div class="flow-item">
+                    <div class="flow-n fn1">01</div>
+                    <div class="flow-body">
+                        <h3>展示案例 Showcase Deal</h3>
+                        <p>從信任圈中選一家面臨具體 ESG 罰款風險的企業。提供半價顧問費 + 1% 營收分潤。當這家公司避免了 NT$500 萬的罰款，故事就會自己傳播。</p>
+                        <div class="metric">🎯 目標：1 家成功案例 → 口碑啟動飛輪</div>
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-n fn2">02</div>
+                    <div class="flow-body">
+                        <h3>量化你的價值 Loss Avoidance Scorecard</h3>
+                        <p>追蹤每位客戶因 Jannice 的介入而避免的損失金額。這不是行銷話術——是談判籌碼。「去年我幫你避免了 NT$300 萬的風險，1% 分潤很合理吧？」</p>
+                        <div class="metric">📊 工具：風險儀表板自動追蹤 → 數據說話</div>
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-n fn3">03</div>
+                    <div class="flow-body">
+                        <h3>結構化協議 Tiered Pricing</h3>
+                        <p>兩層定價：<strong>基礎層</strong>（低於市場 50% 的顧問費）+ <strong>成功層</strong>（3 年期 1-2%
+                            營收分潤）。客戶前期風險低，Jannice 長期收益高。雙贏結構。</p>
+                        <div class="metric">💰 結構：半價基礎費 + 3年 1-2% 營收分潤</div>
+                    </div>
+                </div>
+                <div class="flow-item">
+                    <div class="flow-n fn4">04</div>
+                    <div class="flow-body">
+                        <h3>組合建構 Portfolio Building</h3>
+                        <p>5 年內累積 <strong>15 家</strong>企業的營收分潤協議（預期淨存活 10 家，台灣 SME 5年存活率 ~70%）。每家年產 NT$30-80 萬被動收入。</p>
+                        <div class="metric">🚀 目標：15家 × 70% 存活 ≈ 10家 × NT$50萬 = NT$500萬被動年收</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PILLAR 4: LIVE DASHBOARD -->
+    <section>
+        <div class="container">
+            <span class="stag stag-e">策略支柱四 TECH MOAT</span>
+            <h2 class="sh">即時風險儀表板<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Live Dashboard,
+                    Not PDF Reports</small></h2>
+            <p class="sd">
+                Jannice 有 PyTorch、TensorRT、Prometheus/Grafana 技術能力。這是報告 v1 完全遺漏的隱藏武器。當其他 ESG 顧問還在寫 Word 文件時，她可以交付即時儀表板。
+            </p>
+
+            <div class="cg">
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(244,63,94,.1)">🔴</div>
+                    <h3>風險雷達儀表板</h3>
+                    <p>為每位信任圈成員提供客製化的即時風險監控。不是季度 PDF → 是他們每天打開就能看到的風險狀態頁。紅燈/黃燈/綠燈，一目了然。</p>
+                    <div class="tag-inline" style="background:rgba(244,63,94,.06);color:var(--rose2)">Grafana + 客製化儀表板
+                    </div>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(16,185,129,.1)">🧠</div>
+                    <h3>獨家風險評分模型</h3>
+                    <p><strong>保險理賠數據 + ESG 風險信號 = 沒有其他人擁有的數據源組合。</strong>用 PyTorch 建立預測模型，提前 3-6 個月預警潛在風險。這是真正的技術壁壘。
+                    </p>
+                    <div class="tag-inline" style="background:rgba(16,185,129,.06);color:var(--emerald2)">PyTorch 預測模型 →
+                        獨家數據護城河</div>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(14,165,233,.1)">⚡</div>
+                    <h3>自動化預警推播</h3>
+                    <p>新法規、產業變動、供應鏈風險 → Prometheus 監控 + 自動 LINE/Telegram 推播給受影響的成員。從「季度報告」進化為「即時保護傘」。</p>
+                    <div class="tag-inline" style="background:rgba(14,165,233,.06);color:var(--teal2)">Prometheus 監控 +
+                        LINE Bot 推播</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section style="background:var(--surface)">
+        <div class="container">
+            <span class="stag stag-g">執行路線圖 ROADMAP</span>
+            <h2 class="sh">90 天啟動計畫</h2>
+            <p class="sd">從保險客戶開始，不是從零開始</p>
+
+            <div class="tl">
+                <div class="tl-item">
+                    <div class="tl-time">DAY 1-30 ▸ 種子期</div>
+                    <h4>保險客戶 → 信任圈 MVP</h4>
+                    <p>從現有保險客戶中邀請 8-12 位進入晚餐圓桌。第一場：在屏東在地餐廳包場，主題「2026 你的公司最大的看不見的風險是什麼？」。免費，但建立規則：之後月費制。同步開始搭建 Grafana
+                        風險儀表板 MVP。</p>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-time">DAY 31-60 ▸ 驗證期</div>
+                    <h4>第一份風險掃描 + 展示案例</h4>
+                    <p>為圓桌成員交付第一版即時風險儀表板（先 3-5 家試用）。識別 1 家最適合「半價+分潤」的展示案例。開始收圓桌年費 NT$36,000 起。在 Threads 上分享「老闆看不見的風險」系列
+                        → 建立專業定位。</p>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-time">DAY 61-90 ▸ 協議期</div>
+                    <h4>首筆營收分潤簽約</h4>
+                    <p>與展示案例簽訂「半價顧問費 + 1% 營收分潤 × 3年」協議。信任圈擴展至 15-20 人。風險儀表板接入保險理賠數據，建立獨家風險評分 v1。讓早期成員推薦新成員（轉介獎勵：減免一季年費）。
+                    </p>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-time">6-12 個月 ▸ 飛輪期</div>
+                    <h4>四合一系統啟動</h4>
+                    <p>信任圈 25-30 人，形成南台灣 SME 風險情報網。3-5 家營收分潤合作。風險儀表板 SaaS 化 → 獨立訂閱收入。CBAM 2026 需求窗口打開 →
+                        跨境風險模組上線。年被動收入目標：NT$150-300萬。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REVENUE MODEL -->
+    <section>
+        <div class="container">
+            <span class="stag stag-e">收入模型 REVENUE STACK</span>
+            <h2 class="sh">四層被動收入堆疊</h2>
+            <p class="sd">不是選一條路，而是四條路同時建構護城河</p>
+
+            <div class="cg" style="grid-template-columns:repeat(2,1fr)">
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(124,106,239,.1)">1️⃣</div>
+                    <h3>信任圈年費</h3>
+                    <p>25人 × NT$80,000 = <strong style="color:var(--emerald2)">NT$200萬/年</strong></p>
+                    <p style="margin-top:8px">晚餐圓桌 + 風險預警 + 人脈網路。低門檻，高黏著度，網路效應驅動。</p>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(245,166,35,.1)">2️⃣</div>
+                    <h3>營收分潤組合</h3>
+                    <p>10家存活 × NT$50萬 = <strong style="color:var(--emerald2)">NT$500萬/年</strong></p>
+                    <p style="margin-top:8px">半價顧問費入場 → 3年期 1-2% 營收分潤。需 15 家建倉，預期淨存活 10 家。</p>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(14,165,233,.1)">3️⃣</div>
+                    <h3>風險儀表板 SaaS</h3>
+                    <p>50用戶 × NT$3,000/月 = <strong style="color:var(--emerald2)">NT$180萬/年</strong></p>
+                    <p style="margin-top:8px">信任圈外的 SME 也能訂閱。獨家數據模型 = 競爭壁壘。可逐步擴展到全台灣。</p>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(16,185,129,.1)">4️⃣</div>
+                    <h3>保險佣金（現有）</h3>
+                    <p>信任圈成員 → 交叉銷售 = <strong style="color:var(--emerald2)">+30% 佣金成長</strong></p>
+                    <p style="margin-top:8px">信任圈擴大 → 保險客戶自然增加。現有收入流不會消失，反而被放大。</p>
+                </div>
+            </div>
+
+            <div class="fp-block" style="margin-top:40px;text-align:center">
+                <p style="color:var(--text3);font-size:13px;letter-spacing:1px;font-weight:600">5 年目標 · TOTAL PASSIVE
+                    INCOME</p>
+                <p style="font-size:2.8rem;font-weight:900;margin:12px 0"><span class="grad-gold">NT$ 880萬+</span><span
+                        style="font-size:1rem;color:var(--text3);font-weight:400"> /年</span></p>
+                <p style="color:var(--text2);font-size:.9rem">信任圈 200萬 + 營收分潤 500萬 + SaaS 180萬 + 保險交叉銷售加成</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-box">
+                <h2>答案不是做更多事<br>而是站在<span class="grad-purple">對的交叉口</span></h2>
+                <p>Jannice 不需要成為網紅。不需要賣課程。不需要做任何她目前沒有在做的事。<br>她只需要把已經擁有的四個身份——<strong>系統化地連結起來</strong>。</p>
+                <div class="cta-3">
+                    <div>
+                        <div class="sn" style="color:var(--accent2)">STEP 1</div>
+                        <h4>晚餐圓桌</h4>
+                        <p>保險客戶→信任圈，8人開始，屏東在地餐廳</p>
+                    </div>
+                    <div>
+                        <div class="sn" style="color:var(--gold2)">STEP 2</div>
+                        <h4>風險儀表板</h4>
+                        <p>用她的 AI 技術交付即時監控，不是 PDF</p>
+                    </div>
+                    <div>
+                        <div class="sn" style="color:var(--teal2)">STEP 3</div>
+                        <h4>營收分潤</h4>
+                        <p>一個展示案例開始，用成功說話</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Strategy V2 for <a href="https://instagram.com/jannicelife" target="_blank">@jannicelife</a> · Built on
+                First Principles · Reviewed by 🚀 Antigravity Agent · February 2026</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
