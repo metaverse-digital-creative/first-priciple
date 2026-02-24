@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jannice Lee — 台灣中小企業風險基礎設施 Strategy V2</title>
+    <title>Jannice Lee — Factory-First Strategy V3</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
         rel="stylesheet">
@@ -16,30 +16,31 @@
         }
 
         :root {
-            --bg: #06080d;
-            --surface: #0d1117;
-            --surface2: #161b22;
-            --surface3: #21262d;
-            --accent: #7c6aef;
-            --accent2: #a78bfa;
-            --accent3: #c4b5fd;
-            --gold: #f5a623;
-            --gold2: #fbbf24;
-            --gold3: #fde68a;
-            --teal: #0ea5e9;
-            --teal2: #38bdf8;
-            --teal3: #7dd3fc;
-            --emerald: #10b981;
-            --emerald2: #34d399;
-            --rose: #f43f5e;
-            --rose2: #fb7185;
-            --orange: #f97316;
-            --orange2: #fb923c;
-            --text: #f0f6fc;
-            --text2: #8b949e;
-            --text3: #484f58;
-            --border: #21262d;
-            --border2: #30363d;
+            /* Hermès Palette */
+            --bg: #1a1612;
+            --surface: #221e19;
+            --surface2: #2c2720;
+            --surface3: #37312a;
+            --accent: #e8621a;
+            --accent2: #f07c3e;
+            --accent3: #f5a66a;
+            --gold: #c9a84c;
+            --gold2: #d4b85e;
+            --gold3: #e5d08a;
+            --teal: #c9a84c;
+            --teal2: #d4b85e;
+            --teal3: #e5d08a;
+            --emerald: #c9a84c;
+            --emerald2: #d4b85e;
+            --rose: #e8621a;
+            --rose2: #f07c3e;
+            --orange: #e8621a;
+            --orange2: #f07c3e;
+            --text: #f5f0e8;
+            --text2: #a89e91;
+            --text3: #6d6358;
+            --border: #37312a;
+            --border2: #4a4238;
         }
 
         body {
@@ -86,6 +87,7 @@
         .topbar-brand span {
             background: linear-gradient(135deg, var(--accent), var(--gold));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent
         }
 
@@ -93,9 +95,9 @@
             font-size: 11px;
             padding: 4px 12px;
             border-radius: 100px;
-            background: rgba(124, 106, 239, .1);
+            background: rgba(232, 98, 26, .1);
             color: var(--accent2);
-            border: 1px solid rgba(124, 106, 239, .2);
+            border: 1px solid rgba(232, 98, 26, .2);
             font-weight: 600;
             letter-spacing: .5px
         }
@@ -118,7 +120,7 @@
             border-radius: 50%;
             top: -200px;
             right: -200px;
-            background: radial-gradient(circle, rgba(124, 106, 239, .08), transparent 70%);
+            background: radial-gradient(circle, rgba(232, 98, 26, .06), transparent 70%);
             animation: float 15s ease-in-out infinite
         }
 
@@ -130,7 +132,7 @@
             border-radius: 50%;
             bottom: -100px;
             left: -100px;
-            background: radial-gradient(circle, rgba(245, 166, 35, .05), transparent 70%);
+            background: radial-gradient(circle, rgba(201, 168, 76, .05), transparent 70%);
             animation: float 20s ease-in-out infinite reverse
         }
 
@@ -198,18 +200,21 @@
         .grad-purple {
             background: linear-gradient(135deg, var(--accent), var(--accent3));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent
         }
 
         .grad-gold {
             background: linear-gradient(135deg, var(--gold), var(--gold3));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent
         }
 
         .grad-teal {
             background: linear-gradient(135deg, var(--teal), var(--teal3));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent
         }
 
@@ -285,33 +290,33 @@
         }
 
         .stag-p {
-            background: rgba(124, 106, 239, .08);
+            background: rgba(232, 98, 26, .08);
             color: var(--accent2);
-            border: 1px solid rgba(124, 106, 239, .15)
+            border: 1px solid rgba(232, 98, 26, .15)
         }
 
         .stag-g {
-            background: rgba(245, 166, 35, .08);
+            background: rgba(201, 168, 76, .08);
             color: var(--gold2);
-            border: 1px solid rgba(245, 166, 35, .15)
+            border: 1px solid rgba(201, 168, 76, .15)
         }
 
         .stag-t {
-            background: rgba(14, 165, 233, .08);
-            color: var(--teal2);
-            border: 1px solid rgba(14, 165, 233, .15)
+            background: rgba(201, 168, 76, .08);
+            color: var(--gold2);
+            border: 1px solid rgba(201, 168, 76, .15)
         }
 
         .stag-e {
-            background: rgba(16, 185, 129, .08);
-            color: var(--emerald2);
-            border: 1px solid rgba(16, 185, 129, .15)
+            background: rgba(201, 168, 76, .08);
+            color: var(--gold2);
+            border: 1px solid rgba(201, 168, 76, .15)
         }
 
         .stag-r {
-            background: rgba(244, 63, 94, .08);
-            color: var(--rose2);
-            border: 1px solid rgba(244, 63, 94, .15)
+            background: rgba(232, 98, 26, .08);
+            color: var(--accent2);
+            border: 1px solid rgba(232, 98, 26, .15)
         }
 
         .sh {
@@ -449,8 +454,8 @@
         }
 
         .ix-card.core {
-            border-color: rgba(124, 106, 239, .3);
-            background: linear-gradient(135deg, rgba(124, 106, 239, .03), rgba(245, 166, 35, .02))
+            border-color: rgba(232, 98, 26, .3);
+            background: linear-gradient(135deg, rgba(232, 98, 26, .03), rgba(201, 168, 76, .02))
         }
 
         .ix-card h3 {
@@ -532,28 +537,28 @@
         }
 
         .fn1 {
-            background: rgba(124, 106, 239, .1);
+            background: rgba(232, 98, 26, .1);
             color: var(--accent2)
         }
 
         .fn2 {
-            background: rgba(245, 166, 35, .1);
+            background: rgba(201, 168, 76, .1);
             color: var(--gold2)
         }
 
         .fn3 {
-            background: rgba(14, 165, 233, .1);
-            color: var(--teal2)
+            background: rgba(201, 168, 76, .1);
+            color: var(--gold2)
         }
 
         .fn4 {
-            background: rgba(16, 185, 129, .1);
-            color: var(--emerald2)
+            background: rgba(232, 98, 26, .1);
+            color: var(--accent2)
         }
 
         .fn5 {
-            background: rgba(244, 63, 94, .1);
-            color: var(--rose2)
+            background: rgba(201, 168, 76, .1);
+            color: var(--gold2)
         }
 
         .flow-body h3 {
@@ -575,9 +580,9 @@
             border-radius: 100px;
             font-size: 11px;
             font-weight: 600;
-            background: rgba(124, 106, 239, .06);
+            background: rgba(232, 98, 26, .06);
             color: var(--accent3);
-            border: 1px solid rgba(124, 106, 239, .12)
+            border: 1px solid rgba(232, 98, 26, .12)
         }
 
         /* Compare Table */
@@ -699,8 +704,8 @@
         }
 
         .cta-box {
-            background: linear-gradient(135deg, rgba(124, 106, 239, .06), rgba(245, 166, 35, .04));
-            border: 1px solid rgba(124, 106, 239, .15);
+            background: linear-gradient(135deg, rgba(232, 98, 26, .06), rgba(201, 168, 76, .04));
+            border: 1px solid rgba(232, 98, 26, .15);
             border-radius: 24px;
             padding: 56px 40px;
             max-width: 720px;
@@ -771,17 +776,349 @@
             text-decoration: none
         }
 
-        @media(max-width:600px) {
-            .cta-3 {
-                flex-direction: column
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media(max-width:768px) {
+            .container {
+                padding: 0 16px
             }
 
+            section {
+                padding: 60px 0
+            }
+
+            /* Topbar: stack vertically */
+            .topbar {
+                padding: 10px 0
+            }
+
+            .topbar-inner {
+                flex-direction: column;
+                gap: 6px;
+                align-items: flex-start
+            }
+
+            .topbar-brand {
+                font-size: 13px
+            }
+
+            .topbar-label {
+                font-size: 10px;
+                padding: 3px 10px
+            }
+
+            /* Hero */
+            .hero {
+                padding-top: 80px;
+                min-height: auto;
+                padding-bottom: 60px
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+                line-height: 1.2;
+                margin-bottom: 20px
+            }
+
+            .hero-eyebrow {
+                margin-bottom: 20px
+            }
+
+            .hero-eyebrow .label {
+                font-size: 10px;
+                letter-spacing: 1px
+            }
+
+            .hero-sub {
+                font-size: .95rem;
+                margin-bottom: 28px;
+                line-height: 1.7
+            }
+
+            .hero-intersection {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px
+            }
+
+            .hi-item {
+                padding: 12px
+            }
+
+            .hi-item .emoji {
+                font-size: 20px
+            }
+
+            .hi-item .hi-label {
+                font-size: 11px
+            }
+
+            .hi-item .hi-val {
+                font-size: 12px
+            }
+
+            /* Section headings */
+            .sh {
+                font-size: 1.4rem;
+                margin-bottom: 10px
+            }
+
+            .sh small {
+                font-size: .5em !important
+            }
+
+            .sd {
+                font-size: .9rem;
+                margin-bottom: 32px
+            }
+
+            .stag {
+                font-size: 10px;
+                padding: 4px 12px;
+                letter-spacing: 1px
+            }
+
+            /* First Principles block */
+            .fp-block {
+                padding: 24px 20px;
+                margin: 32px 0;
+                border-radius: 16px
+            }
+
+            .fp-q {
+                font-size: 1rem;
+                line-height: 1.6
+            }
+
+            .fp-a {
+                font-size: 1rem;
+                line-height: 1.7
+            }
+
+            .fp-divider {
+                margin: 16px 0
+            }
+
+            /* Comparison table: horizontal scroll wrapper */
+            .ctb {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin-top: 24px;
+                border-radius: 14px
+            }
+
+            .ctb th,
+            .ctb td {
+                padding: 12px 14px;
+                font-size: .8rem;
+                white-space: nowrap
+            }
+
+            .ctb th {
+                font-size: .7rem
+            }
+
+            /* Cards */
             .cg {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
+                gap: 14px
             }
 
+            .cd {
+                padding: 24px 20px;
+                border-radius: 14px
+            }
+
+            .cd h3 {
+                font-size: .95rem
+            }
+
+            .cd p {
+                font-size: .84rem
+            }
+
+            .cd .tag-inline {
+                font-size: 11px;
+                padding: 4px 12px;
+                margin-top: 8px
+            }
+
+            /* Intersection diagram */
             .ix-diagram {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
+                gap: 14px;
+                margin-top: 32px
+            }
+
+            .ix-card {
+                padding: 24px 20px;
+                border-radius: 14px
+            }
+
+            .ix-card h3 {
+                font-size: 1rem;
+                flex-wrap: wrap
+            }
+
+            .ix-card p {
+                font-size: .84rem
+            }
+
+            .ix-card li {
+                font-size: .84rem;
+                gap: 6px
+            }
+
+            .ix-revenue {
+                font-size: 11px;
+                padding: 4px 12px;
+                margin-top: 10px
+            }
+
+            /* Flow steps */
+            .flow {
+                margin-top: 32px
+            }
+
+            .flow-item {
+                grid-template-columns: 44px 1fr;
+                gap: 14px;
+                padding: 20px 0
+            }
+
+            .flow-n {
+                width: 38px;
+                height: 38px;
+                font-size: .9rem
+            }
+
+            .flow-body h3 {
+                font-size: .92rem
+            }
+
+            .flow-body p {
+                font-size: .84rem
+            }
+
+            .flow-body .metric {
+                font-size: 11px;
+                padding: 5px 12px;
+                line-height: 1.5;
+                white-space: normal;
+                display: block;
+                margin-top: 10px
+            }
+
+            /* Timeline */
+            .tl {
+                padding-left: 28px;
+                margin-top: 32px
+            }
+
+            .tl-item {
+                padding: 0 0 28px 20px
+            }
+
+            .tl-item::before {
+                left: -22px;
+                width: 10px;
+                height: 10px
+            }
+
+            .tl-item h4 {
+                font-size: .9rem
+            }
+
+            .tl-time {
+                font-size: 10px
+            }
+
+            .tl-item p {
+                font-size: .82rem
+            }
+
+            /* Revenue grid on revenue section */
+            .cg[style*="grid-template-columns:repeat(2"] {
+                grid-template-columns: 1fr !important
+            }
+
+            /* CTA */
+            .cta {
+                padding: 60px 0
+            }
+
+            .cta-box {
+                padding: 32px 20px;
+                border-radius: 18px
+            }
+
+            .cta-box h2 {
+                font-size: 1.3rem
+            }
+
+            .cta-box p {
+                font-size: .85rem;
+                margin-bottom: 20px
+            }
+
+            .cta-3 {
+                flex-direction: column;
+                gap: 12px
+            }
+
+            .cta-3>div {
+                padding: 16px;
+                min-width: unset
+            }
+
+            .cta-3 h4 {
+                font-size: .85rem
+            }
+
+            .cta-3 p {
+                font-size: .76rem
+            }
+
+            /* Revenue total block */
+            .fp-block p[style*="font-size:2.8rem"] {
+                font-size: 2rem !important
+            }
+
+            /* Footer */
+            .footer {
+                padding: 28px 0
+            }
+
+            .footer p {
+                font-size: 11px
+            }
+        }
+
+        /* Extra small phones */
+        @media(max-width:380px) {
+            .container {
+                padding: 0 12px
+            }
+
+            .hero h1 {
+                font-size: 1.5rem
+            }
+
+            .fp-q {
+                font-size: .9rem
+            }
+
+            .fp-a {
+                font-size: .9rem
+            }
+
+            .sh {
+                font-size: 1.2rem
+            }
+
+            .ctb th,
+            .ctb td {
+                padding: 10px 10px;
+                font-size: .75rem
             }
         }
     </style>
@@ -792,7 +1129,7 @@
     <nav class="topbar">
         <div class="container topbar-inner">
             <div class="topbar-brand">🚀 <span>ANTIGRAVITY</span> × JANNICE LEE</div>
-            <div class="topbar-label">STRATEGY V2 · FIRST PRINCIPLES</div>
+            <div class="topbar-label">STRATEGY V3 · FACTORY-FIRST</div>
         </div>
     </nav>
 
@@ -802,358 +1139,406 @@
             <div class="hero-content">
                 <div class="hero-eyebrow">
                     <div class="dot"></div>
-                    <div class="label">First-Principles Strategy Report · V2</div>
+                    <div class="label">FIRST-PRINCIPLES STRATEGY REPORT · V3</div>
                 </div>
                 <h1>
-                    台灣中小企業<br><span class="grad-purple">風險基礎設施</span><br>
-                    <span class="grad-gold">不只是 ESG 顧問</span>
+                    她不是在創業<br>
+                    <span class="grad-purple">她在改造自己的工廠</span><br>
+                    <span class="grad-gold">然後賣解方給全台灣</span>
                 </h1>
                 <p class="hero-sub">
-                    Jannice Lee 不是一個 ESG 顧問。她是坐在四個產業交叉口的稀有物種——保險經紀、ESG合規、AI自動化、國際貿易。第一性原理告訴我們：不要只看她的頭銜，要看她站在哪個「交叉口」。
+                    Jannice Lee 擁有一座 NT$1.33 億的製造工廠（青宇企業），同時經營 AI/Robotics 科技公司（雷喜達）。她不需要找客戶證明方案有效——她的工廠就是 Customer
+                    Zero。
                 </p>
                 <div class="hero-intersection">
                     <div class="hi-item">
-                        <div class="emoji">🛡️</div>
-                        <div class="hi-label">保險經紀</div>
-                        <div class="hi-val">已知風險</div>
-                    </div>
-                    <div class="hi-item">
-                        <div class="emoji">🌱</div>
-                        <div class="hi-label">ESG 顧問</div>
-                        <div class="hi-val">監管風險</div>
+                        <div class="emoji">🏭</div>
+                        <div class="hi-label">青宇企業</div>
+                        <div class="hi-val">1.33 億資產</div>
                     </div>
                     <div class="hi-item">
                         <div class="emoji">🤖</div>
-                        <div class="hi-label">AI / Robotics</div>
-                        <div class="hi-val">營運風險</div>
+                        <div class="hi-label">雷喜達科技</div>
+                        <div class="hi-val">5.6x 成長</div>
                     </div>
                     <div class="hi-item">
-                        <div class="emoji">🌏</div>
+                        <div class="emoji">🛡️</div>
+                        <div class="hi-label">保險經紀</div>
+                        <div class="hi-val">客戶管道</div>
+                    </div>
+                    <div class="hi-item">
+                        <div class="emoji">🌍</div>
                         <div class="hi-label">國際貿易</div>
-                        <div class="hi-val">跨境風險</div>
+                        <div class="hi-val">500萬出口</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FIRST PRINCIPLE -->
-    <section>
-        <div class="container">
-            <span class="stag stag-p">第一性原理 FIRST PRINCIPLE</span>
-            <h2 class="sh">從原子層級重新拆解</h2>
-            <p class="sd">忘掉所有頭銜。拆解到最底層，Jannice 真正在做什麼？</p>
-
-            <div class="fp-block">
-                <div class="fp-q">「如果我們把 Jannice 所有的專業能力全部拆開，再從零重新組裝，最有價值的組合是什麼？」</div>
-                <div class="fp-divider"></div>
-                <div class="fp-a">
-                    一個人、一層信任關係、四條風險覆蓋——<br>
-                    <span class="grad-purple">保險</span>覆蓋已知風險、<span class="grad-gold">ESG</span>覆蓋監管風險、<span
-                        class="grad-teal">AI</span>覆蓋營運風險、<span class="grad-gold">貿易</span>覆蓋跨境風險。<br><br>
-                    這不是四份工作，而是一個<strong>風險基礎設施</strong>——<br>
-                    而它的護城河只有一個字：<span style="font-size:1.6em;font-weight:900" class="grad-purple">信</span>
-                </div>
-            </div>
-
-            <table class="ctb">
-                <thead>
-                    <tr>
-                        <th>維度</th>
-                        <th>舊思維 ✗</th>
-                        <th>第一性原理 ✓</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>她是誰</td>
-                        <td class="old">ESG 顧問（單一角色）</td>
-                        <td class="new">SME 風險基礎設施（交叉口）</td>
-                    </tr>
-                    <tr>
-                        <td>賣什麼</td>
-                        <td class="old">ESG 知識（折舊資產）</td>
-                        <td class="new">四合一風險覆蓋（增值資產）</td>
-                    </tr>
-                    <tr>
-                        <td>護城河</td>
-                        <td class="old">個人品牌（可模仿）</td>
-                        <td class="new">信任 × 保險數據 × 在地情報</td>
-                    </tr>
-                    <tr>
-                        <td>收費模式</td>
-                        <td class="old">小時費率（線性）</td>
-                        <td class="new">營收分潤（指數複利）</td>
-                    </tr>
-                    <tr>
-                        <td>冷啟動</td>
-                        <td class="old">從零開始找客戶</td>
-                        <td class="new">保險經紀客戶即 Day 1 信任圈</td>
-                    </tr>
-                    <tr>
-                        <td>技術壁壘</td>
-                        <td class="old">Word 報告（可被AI取代）</td>
-                        <td class="new">即時風險儀表板（PyTorch+Grafana）</td>
-                    </tr>
-                    <tr>
-                        <td>在地優勢</td>
-                        <td class="old">線上內容（全球競爭）</td>
-                        <td class="new">屏東 × 南台灣 SME（晚餐圓桌）</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- PILLAR 1: INTERSECTION -->
+    <!-- SECTION 1: THE PROBLEM -->
     <section style="background:var(--surface)">
         <div class="container">
-            <span class="stag stag-g">策略支柱一 THE INTERSECTION</span>
-            <h2 class="sh">四合一風險覆蓋<br><small style="font-size:.45em;color:var(--text3);font-weight:400">One Person, One
-                    Trust Layer, Four Risk Streams</small></h2>
-            <p class="sd">沒有其他人同時擁有保險經紀執照、ESG顧問資歷、AI技術能力和國際貿易經驗。這個交叉口就是 Jannice 的不可複製位置。</p>
-
-            <div class="ix-diagram">
-                <div class="ix-card core">
-                    <h3>🛡️ 保險經紀 → 已知風險</h3>
-                    <p>她已經在做的事。保險客戶 = Day 1 的信任圈。不需要冷啟動。</p>
-                    <ul>
-                        <li>每位保險客戶都是潛在的 ESG/風險管理客戶</li>
-                        <li>保險理賠數據 = 獨家風險信號（其他顧問沒有）</li>
-                        <li>客戶已經信任她處理「風險」→ 擴展到其他風險類型零摩擦</li>
-                    </ul>
-                    <span class="ix-revenue">💰 現有收入流 — 佣金制</span>
-                </div>
-                <div class="ix-card">
-                    <h3>🌱 ESG 合規 → 監管風險</h3>
-                    <p>永續治理 × 風險控管。讓老闆不再為法規苦惱。</p>
-                    <ul>
-                        <li>法規早期預警（她比客戶早 3-6 個月知道風向）</li>
-                        <li>地方創生結合 ESG — 南台灣獨特角度</li>
-                        <li>不做報告撰寫（可外包/AI化）→ 只做策略判斷</li>
-                    </ul>
-                    <span class="ix-revenue">💰 顧問費 + 營收分潤</span>
-                </div>
-                <div class="ix-card">
-                    <h3>🤖 AI / Robotics → 營運風險</h3>
-                    <p>PyTorch、TensorRT、Prometheus/Grafana — 報告中最大的隱藏武器。</p>
-                    <ul>
-                        <li>風險掃描不是 PDF 報告 → 是<strong>即時儀表板</strong></li>
-                        <li>保險數據 + ESG 信號 = 獨家風險評分模型</li>
-                        <li>自動化營運風險偵測 → 其他顧問做不到的技術壁壘</li>
-                    </ul>
-                    <span class="ix-revenue">💰 SaaS 訂閱 / 數據授權</span>
-                </div>
-                <div class="ix-card">
-                    <h3>🌏 國際貿易 → 跨境風險</h3>
-                    <p>關稅、供應鏈、碳邊境調整機制（CBAM）。</p>
-                    <ul>
-                        <li>南台灣出口導向 SME 最痛的點</li>
-                        <li>歐盟 CBAM 2026 全面實施 → 巨大需求窗口</li>
-                        <li>跨境合規 + ESG 的結合 → 藍海機會</li>
-                    </ul>
-                    <span class="ix-revenue">💰 專案費 + 長期風險監控</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PILLAR 2: TRUST NETWORK -->
-    <section>
-        <div class="container">
-            <span class="stag stag-p">策略支柱二 TRUST NETWORK</span>
-            <h2 class="sh">屏東晚餐圓桌<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Southern Taiwan
-                    SME Trust Circle</small></h2>
-            <p class="sd">南台灣 SME 是關係驅動的文化。月度圓桌不是會議室裡的正式會談——是晚餐＋啤酒＋真心話。這才是 Jannice 的主場。</p>
+            <span class="stag stag-r">壹 THE PROBLEM</span>
+            <h2 class="sh">台灣製造業正在窒息<br><small style="font-size:.45em;color:var(--text3);font-weight:400">High Labor,
+                    Aging Equipment, Tariff Pressure</small></h2>
+            <p class="sd">
+                這不是一個抽象的市場分析。這是 Jannice 家族企業正在面對的真實壓力——也是 50,000+ 台灣中小製造商的共同困境。
+            </p>
 
             <div class="cg">
                 <div class="cd">
-                    <div class="cd-icon" style="background:rgba(124,106,239,.1)">🍻</div>
-                    <h3>晚餐圓桌（不是會議室）</h3>
-                    <p>20-30 位 SME 老闆的私密網路。在地、面對面、有溫度。南台灣的信任建立方式不是 LinkedIn，是吃飯。月會 = 在地餐廳包廂，不是線上會議。</p>
-                    <div class="tag-inline" style="background:rgba(124,106,239,.06);color:var(--accent3)">年費
-                        NT$60,000-120,000/位</div>
+                    <div class="cd-icon" style="background:rgba(232,98,26,.1)">💀</div>
+                    <h3>32% 關稅衝擊</h3>
+                    <p>川普對台灣加徵 32% 關稅（2025/8/1 生效）。每一個出口製造商都需要<strong>立刻降低 30% 成本</strong>才能維持競爭力。</p>
+                    <div class="tag-inline" style="background:rgba(232,98,26,.06);color:var(--accent3)">影響：全台出口製造業</div>
                 </div>
                 <div class="cd">
-                    <div class="cd-icon" style="background:rgba(245,166,35,.1)">🔥</div>
-                    <h3>冷啟動 = 保險客戶</h3>
-                    <p><strong>她不需要從零開始。</strong>現有的保險經紀客戶就是 Day 1 信任圈。他們已經信任 Jannice 處理風險。從保險話題延伸到 ESG、營運、跨境——自然且無摩擦。
-                    </p>
-                    <div class="tag-inline" style="background:rgba(245,166,35,.06);color:var(--gold2)">Day 1 即有 8-15
-                        位種子成員</div>
+                    <div class="cd-icon" style="background:rgba(201,168,76,.1)">📉</div>
+                    <h3>人力成本失控</h3>
+                    <p>台灣製造業平均人力成本佔營收 20-35%。青宇企業 113 年人力成本 <strong>NT$717 萬</strong>，佔營收 55%——這是在流血。</p>
+                    <div class="tag-inline" style="background:rgba(201,168,76,.06);color:var(--gold2)">人力成本佔比過高 = 本業虧損
+                    </div>
                 </div>
                 <div class="cd">
-                    <div class="cd-icon" style="background:rgba(14,165,233,.1)">📡</div>
-                    <h3>風險信號情報網</h3>
-                    <p>圓桌不只是社交——它是情報網路。「我的 3 個客戶剛被標記 X 法規」「Y 供應鏈出問題了」→ 這種信號 Google 找不到、AI 生成不了。人際情報是最強壁壘。</p>
-                    <div class="tag-inline" style="background:rgba(14,165,233,.06);color:var(--teal2)">Bloomberg
-                        Terminal for 南台灣 SME</div>
+                    <div class="cd-icon" style="background:rgba(232,98,26,.1)">⏰</div>
+                    <h3>數位轉型停滯</h3>
+                    <p>90% 的台灣中小製造商還在用<strong>紙本管理、人工品檢</strong>。不是不想轉型——是不知道從哪裡開始，也不信任外部顧問的空話。</p>
+                    <div class="tag-inline" style="background:rgba(232,98,26,.06);color:var(--accent3)">信任問題 = 最大障礙
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PILLAR 3: REVENUE SHARE -->
+    <!-- SECTION 2: THE PROOF -->
+    <section>
+        <div class="container">
+            <span class="stag stag-g">貳 THE PROOF</span>
+            <h2 class="sh">青宇企業——真實數據<br><small style="font-size:.45em;color:var(--text3);font-weight:400">NT$133M
+                    Assets, Verified from 401 VAT Returns</small></h2>
+            <p class="sd">
+                以下數據全部來自青宇企業的 401 營業稅申報書和財務報表。這不是假設——是 Jannice 家族工廠的真實帳目。
+            </p>
+
+            <!-- Key Metrics -->
+            <div class="cg" style="grid-template-columns:repeat(2,1fr)">
+                <div class="cd" style="text-align:center">
+                    <p style="font-size:.75rem;color:var(--text3);font-weight:600;letter-spacing:1px;margin-bottom:8px">
+                        總資產 TOTAL ASSETS</p>
+                    <p style="font-size:2.4rem;font-weight:900"><span class="grad-gold">NT$1.33 億</span></p>
+                    <p style="font-size:.8rem;color:var(--text2);margin-top:6px">土地 + 廠房 + 設備 · 113/12/31</p>
+                </div>
+                <div class="cd" style="text-align:center">
+                    <p style="font-size:.75rem;color:var(--text3);font-weight:600;letter-spacing:1px;margin-bottom:8px">
+                        負債比率 DEBT RATIO</p>
+                    <p style="font-size:2.4rem;font-weight:900"><span class="grad-purple">78.7%</span></p>
+                    <p style="font-size:.8rem;color:var(--text2);margin-top:6px">NT$1.05 億 / NT$1.33 億 · 高槓桿</p>
+                </div>
+            </div>
+
+            <!-- P&L Highlights -->
+            <div class="fp-block" style="margin-top:32px">
+                <h3 style="font-size:1rem;font-weight:700;margin-bottom:20px">📊 113 年度損益 Income Statement</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                    <div>
+                        <p style="font-size:.75rem;color:var(--text3);font-weight:600">營業收入</p>
+                        <p style="font-size:1.3rem;font-weight:800">NT$1,303 萬</p>
+                    </div>
+                    <div>
+                        <p style="font-size:.75rem;color:var(--text3);font-weight:600">人事費用</p>
+                        <p style="font-size:1.3rem;font-weight:800;color:var(--accent2)">NT$717 萬</p>
+                    </div>
+                    <div>
+                        <p style="font-size:.75rem;color:var(--text3);font-weight:600">營業虧損</p>
+                        <p style="font-size:1.3rem;font-weight:800;color:var(--accent2)">-NT$118 萬</p>
+                    </div>
+                    <div>
+                        <p style="font-size:.75rem;color:var(--text3);font-weight:600">淨利（含租金）</p>
+                        <p style="font-size:1.3rem;font-weight:800;color:var(--gold2)">NT$10 萬</p>
+                    </div>
+                </div>
+                <div class="fp-divider"></div>
+                <p style="font-size:.88rem;color:var(--text2)"><strong>關鍵洞察：</strong>本業虧損 118 萬，靠租金收入才勉強打平。人力成本佔營收
+                    55%——這正是 AI/自動化可以解決的核心問題。</p>
+            </div>
+
+            <!-- Revenue Timeline -->
+            <div style="margin-top:48px">
+                <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:24px">📈 營收時間軸 Revenue Timeline (113-114)</h3>
+                <div style="display:grid;gap:8px">
+                    <div style="display:grid;grid-template-columns:90px 1fr 100px;align-items:center;gap:12px">
+                        <span style="font-size:.75rem;color:var(--text3);font-weight:600">113 全年</span>
+                        <div style="background:var(--surface3);height:24px;border-radius:6px;overflow:hidden">
+                            <div style="width:20%;height:100%;background:var(--accent);border-radius:6px"></div>
+                        </div>
+                        <span style="font-size:.75rem;color:var(--text2)">NT$1,303萬</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:90px 1fr 100px;align-items:center;gap:12px">
+                        <span style="font-size:.75rem;color:var(--accent2);font-weight:700">114/3-4 🔥</span>
+                        <div style="background:var(--surface3);height:28px;border-radius:6px;overflow:hidden">
+                            <div style="width:30%;height:100%;background:var(--accent);border-radius:6px"></div>
+                        </div>
+                        <span style="font-size:.8rem;color:var(--accent2);font-weight:700">NT$401萬</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:90px 1fr 100px;align-items:center;gap:12px">
+                        <span style="font-size:.75rem;color:var(--gold2);font-weight:700">114/5-6 🚀</span>
+                        <div style="background:var(--surface3);height:32px;border-radius:6px;overflow:hidden">
+                            <div
+                                style="width:50%;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:6px">
+                            </div>
+                        </div>
+                        <span style="font-size:.85rem;color:var(--gold2);font-weight:700">NT$658萬</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:90px 1fr 100px;align-items:center;gap:12px">
+                        <span style="font-size:.75rem;color:var(--gold2);font-weight:700">114 H1 合計</span>
+                        <div style="background:var(--surface3);height:36px;border-radius:6px;overflow:hidden">
+                            <div
+                                style="width:100%;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:6px">
+                            </div>
+                        </div>
+                        <span style="font-size:.85rem;color:var(--gold2);font-weight:700">NT$1,297萬</span>
+                    </div>
+                </div>
+                <p style="margin-top:16px;font-size:.8rem;color:var(--text3);font-style:italic">114 上半年營收已接近 113 全年 →
+                    年化成長接近 2x</p>
+            </div>
+
+            <!-- Zero-tax exports callout -->
+            <div class="fp-block" style="margin-top:32px;text-align:center">
+                <p style="color:var(--text3);font-size:13px;letter-spacing:1px;font-weight:600">114/5-6 零稅率出口 · ZERO-TAX
+                    EXPORTS</p>
+                <p style="font-size:2.4rem;font-weight:900;margin:12px 0"><span class="grad-gold">NT$500 萬</span></p>
+                <p style="color:var(--text2);font-size:.9rem">青宇已經在做國際貿易。32% 關稅直接衝擊這條收入線。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: THE SOLUTION -->
     <section style="background:var(--surface)">
         <div class="container">
-            <span class="stag stag-t">策略支柱三 REVENUE SHARE</span>
-            <h2 class="sh">營收分潤取代顧問費<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Revenue Share,
-                    Not Equity — Less Friction, Same Economics</small></h2>
+            <span class="stag stag-p">參 THE SOLUTION</span>
+            <h2 class="sh">AI 部署在自己的工廠<br><small style="font-size:.45em;color:var(--text3);font-weight:400">青宇 =
+                    Customer Zero — No External Pitch Needed</small></h2>
             <p class="sd">
-                「股權」在台灣 SME 文化中是敏感詞。但「營收分潤」不是。同樣的經濟效果，零文化摩擦。從一個展示案例開始，用成功說話。
+                Jannice 不需要說服陌生工廠老闆。她直接在青宇部署 AI/Robotics，用自己的 P&L 證明 ROI。這是最有說服力的銷售方式——「我先在自己的工廠做了，這是結果。」
+            </p>
+
+            <div class="fp-block">
+                <p class="fp-q">「如果 Jannice 同時擁有問題和解方，為什麼還要去外面找客戶？」</p>
+                <div class="fp-divider"></div>
+                <p class="fp-a">
+                    <span class="grad-purple">青宇</span>有問題（人力成本 55%、本業虧損 118 萬）<br>
+                    <span class="grad-gold">雷喜達</span>有解方（JAKA 機器人、Basler 視覺、PyTorch 預測）<br>
+                    兩家公司同一個老闆——<strong>零摩擦部署</strong>。
+                </p>
+            </div>
+
+            <div class="cg" style="margin-top:32px">
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(232,98,26,.1)">🦾</div>
+                    <h3>JAKA 協作機器人</h3>
+                    <p>部署在青宇產線，取代重複性人工。目標：<strong>NT$717 萬人力成本降低 30% = 每年省 NT$215 萬</strong>。</p>
+                    <div class="tag-inline" style="background:rgba(232,98,26,.06);color:var(--accent3)">ROI：12-18 個月回本
+                    </div>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(201,168,76,.1)">👁️</div>
+                    <h3>Basler 機器視覺品檢</h3>
+                    <p>AI 視覺取代人工品檢。不良率降低、速度提升、24/7 不間斷。品質數據自動回饋到 品管系統。</p>
+                    <div class="tag-inline" style="background:rgba(201,168,76,.06);color:var(--gold2)">不良率目標：降低 50%
+                    </div>
+                </div>
+                <div class="cd">
+                    <div class="cd-icon" style="background:rgba(232,98,26,.1)">📊</div>
+                    <h3>即時風險儀表板</h3>
+                    <p>PyTorch 預測模型 + Grafana 即時監控。工廠老闆打開手機就能看到產線狀態、良率、能耗、風險預警。</p>
+                    <div class="tag-inline" style="background:rgba(232,98,26,.06);color:var(--accent3)">取代季度 PDF 報告
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: THE FLYWHEEL -->
+    <section>
+        <div class="container">
+            <span class="stag stag-g">肆 THE FLYWHEEL</span>
+            <h2 class="sh">雷喜達 × 青宇 = 複合引擎<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Build →
+                    Validate → Sell — The Compound Engine</small></h2>
+            <p class="sd">
+                兩家公司不是分開的事業。它們是同一個飛輪的兩面——一邊建造技術，一邊驗證效果，然後把成功案例賣給全台灣。
             </p>
 
             <div class="flow">
                 <div class="flow-item">
                     <div class="flow-n fn1">01</div>
                     <div class="flow-body">
-                        <h3>展示案例 Showcase Deal</h3>
-                        <p>從信任圈中選一家面臨具體 ESG 罰款風險的企業。提供半價顧問費 + 1% 營收分潤。當這家公司避免了 NT$500 萬的罰款，故事就會自己傳播。</p>
-                        <div class="metric">🎯 目標：1 家成功案例 → 口碑啟動飛輪</div>
+                        <h3>雷喜達建造 → 青宇部署</h3>
+                        <p>AI/Robotics 解決方案直接在自家工廠測試。不是實驗室 Demo——是真實產線、真實數據、真實 ROI。</p>
+                        <div class="metric">🏭 Customer Zero = 零獲客成本</div>
                     </div>
                 </div>
                 <div class="flow-item">
                     <div class="flow-n fn2">02</div>
                     <div class="flow-body">
-                        <h3>量化你的價值 Loss Avoidance Scorecard</h3>
-                        <p>追蹤每位客戶因 Jannice 的介入而避免的損失金額。這不是行銷話術——是談判籌碼。「去年我幫你避免了 NT$300 萬的風險，1% 分潤很合理吧？」</p>
-                        <div class="metric">📊 工具：風險儀表板自動追蹤 → 數據說話</div>
+                        <h3>青宇驗證 → 產出案例</h3>
+                        <p>「我在自己的工廠省了 NT$215 萬人力成本，不良率降了 50%。」——這不是 PPT，是報稅資料。</p>
+                        <div class="metric">📊 最強銷售素材 = 自己的 P&L</div>
                     </div>
                 </div>
                 <div class="flow-item">
-                    <div class="flow-n fn3">03</div>
+                    <div class="flow-n fn1">03</div>
                     <div class="flow-body">
-                        <h3>結構化協議 Tiered Pricing</h3>
-                        <p>兩層定價：<strong>基礎層</strong>（低於市場 50% 的顧問費）+ <strong>成功層</strong>（3 年期 1-2%
-                            營收分潤）。客戶前期風險低，Jannice 長期收益高。雙贏結構。</p>
-                        <div class="metric">💰 結構：半價基礎費 + 3年 1-2% 營收分潤</div>
+                        <h3>保險客戶 = 精準客源</h3>
+                        <p>Jannice 的保險經紀客戶都是中小企業主。她已經知道他們的風險、財務狀況、痛點。從保險延伸到工廠自動化——<strong>零度信任建立</strong>。</p>
+                        <div class="metric">🛡️ Day 1 即有 8-15 位精準客戶</div>
                     </div>
                 </div>
                 <div class="flow-item">
-                    <div class="flow-n fn4">04</div>
+                    <div class="flow-n fn2">04</div>
                     <div class="flow-body">
-                        <h3>組合建構 Portfolio Building</h3>
-                        <p>5 年內累積 <strong>15 家</strong>企業的營收分潤協議（預期淨存活 10 家，台灣 SME 5年存活率 ~70%）。每家年產 NT$30-80 萬被動收入。</p>
-                        <div class="metric">🚀 目標：15家 × 70% 存活 ≈ 10家 × NT$50萬 = NT$500萬被動年收</div>
+                        <h3>規模化 → 複製到全台灣</h3>
+                        <p>台灣 50,000+ 中小製造商面臨同樣問題。青宇的成功案例 + 保險客戶管道 + 32% 關稅急迫性 = <strong>需求爆發</strong>。</p>
+                        <div class="metric">🚀 TAM：50,000+ 中小製造商</div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Combined Revenue -->
+            <div class="fp-block" style="margin-top:48px;text-align:center">
+                <p style="color:var(--text3);font-size:13px;letter-spacing:1px;font-weight:600">114 上半年 · 兩家公司合併營收</p>
+                <p style="font-size:2.8rem;font-weight:900;margin:8px 0"><span class="grad-gold">NT$1,670 萬</span></p>
+                <p style="color:var(--text2);font-size:.9rem">青宇 NT$1,297 萬 + 雷喜達 NT$372 萬 · 年化 NT$3,000-3,500 萬</p>
+            </div>
+
+            <!-- 雷喜達 growth bar -->
+            <div style="margin-top:32px">
+                <h3 style="font-size:1rem;font-weight:700;margin-bottom:16px">🔥 雷喜達科技成長軌跡</h3>
+                <div style="display:grid;gap:8px">
+                    <div style="display:grid;grid-template-columns:90px 1fr 100px;align-items:center;gap:12px">
+                        <span style="font-size:.75rem;color:var(--text3);font-weight:600">113 全年</span>
+                        <div style="background:var(--surface3);height:24px;border-radius:6px;overflow:hidden">
+                            <div style="width:18%;height:100%;background:var(--accent);border-radius:6px"></div>
+                        </div>
+                        <span style="font-size:.75rem;color:var(--text2)">NT$66 萬</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:90px 1fr 100px;align-items:center;gap:12px">
+                        <span style="font-size:.75rem;color:var(--gold2);font-weight:700">114 H1 🚀</span>
+                        <div style="background:var(--surface3);height:32px;border-radius:6px;overflow:hidden">
+                            <div
+                                style="width:100%;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:6px">
+                            </div>
+                        </div>
+                        <span style="font-size:.85rem;color:var(--gold2);font-weight:700">NT$372 萬</span>
+                    </div>
+                </div>
+                <p style="margin-top:12px;font-size:.8rem;color:var(--accent2);font-weight:600">5.6x YoY 成長 ·
+                    從純服務轉型為硬體+服務複合模式</p>
             </div>
         </div>
     </section>
 
-    <!-- PILLAR 4: LIVE DASHBOARD -->
-    <section>
-        <div class="container">
-            <span class="stag stag-e">策略支柱四 TECH MOAT</span>
-            <h2 class="sh">即時風險儀表板<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Live Dashboard,
-                    Not PDF Reports</small></h2>
-            <p class="sd">
-                Jannice 有 PyTorch、TensorRT、Prometheus/Grafana 技術能力。這是報告 v1 完全遺漏的隱藏武器。當其他 ESG 顧問還在寫 Word 文件時，她可以交付即時儀表板。
-            </p>
-
-            <div class="cg">
-                <div class="cd">
-                    <div class="cd-icon" style="background:rgba(244,63,94,.1)">🔴</div>
-                    <h3>風險雷達儀表板</h3>
-                    <p>為每位信任圈成員提供客製化的即時風險監控。不是季度 PDF → 是他們每天打開就能看到的風險狀態頁。紅燈/黃燈/綠燈，一目了然。</p>
-                    <div class="tag-inline" style="background:rgba(244,63,94,.06);color:var(--rose2)">Grafana + 客製化儀表板
-                    </div>
-                </div>
-                <div class="cd">
-                    <div class="cd-icon" style="background:rgba(16,185,129,.1)">🧠</div>
-                    <h3>獨家風險評分模型</h3>
-                    <p><strong>保險理賠數據 + ESG 風險信號 = 沒有其他人擁有的數據源組合。</strong>用 PyTorch 建立預測模型，提前 3-6 個月預警潛在風險。這是真正的技術壁壘。
-                    </p>
-                    <div class="tag-inline" style="background:rgba(16,185,129,.06);color:var(--emerald2)">PyTorch 預測模型 →
-                        獨家數據護城河</div>
-                </div>
-                <div class="cd">
-                    <div class="cd-icon" style="background:rgba(14,165,233,.1)">⚡</div>
-                    <h3>自動化預警推播</h3>
-                    <p>新法規、產業變動、供應鏈風險 → Prometheus 監控 + 自動 LINE/Telegram 推播給受影響的成員。從「季度報告」進化為「即時保護傘」。</p>
-                    <div class="tag-inline" style="background:rgba(14,165,233,.06);color:var(--teal2)">Prometheus 監控 +
-                        LINE Bot 推播</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ROADMAP -->
+    <!-- SECTION 5: THE INTERSECTION -->
     <section style="background:var(--surface)">
         <div class="container">
-            <span class="stag stag-g">執行路線圖 ROADMAP</span>
-            <h2 class="sh">90 天啟動計畫</h2>
-            <p class="sd">從保險客戶開始，不是從零開始</p>
+            <span class="stag stag-p">伍 WHY ONLY JANNICE</span>
+            <h2 class="sh">為什麼只有她能做到<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Four Domains ×
+                    One Factory = Uncopiable Moat</small></h2>
+            <p class="sd">
+                任何一個單獨的身份都可以被取代。但四個身份交叉——再加上她「自己擁有工廠」——這個組合全台灣找不到第二個。
+            </p>
 
-            <div class="tl">
-                <div class="tl-item">
-                    <div class="tl-time">DAY 1-30 ▸ 種子期</div>
-                    <h4>保險客戶 → 信任圈 MVP</h4>
-                    <p>從現有保險客戶中邀請 8-12 位進入晚餐圓桌。第一場：在屏東在地餐廳包場，主題「2026 你的公司最大的看不見的風險是什麼？」。免費，但建立規則：之後月費制。同步開始搭建 Grafana
-                        風險儀表板 MVP。</p>
+            <div class="ix-diagram">
+                <div class="ix-card core">
+                    <h3>🏭 工廠主 × AI 建造者</h3>
+                    <p>她不是來「幫你轉型」的外部顧問——她是自己的工廠先轉型成功的人。</p>
+                    <ul>
+                        <li>青宇 = 真實驗證場域（NT$1.33 億資產）</li>
+                        <li>雷喜達 = 技術建造引擎（5.6x 成長）</li>
+                        <li>同一個老闆 = 零摩擦部署</li>
+                    </ul>
+                    <div class="ix-revenue">🔑 全台唯一: 同時擁有問題和解方</div>
                 </div>
-                <div class="tl-item">
-                    <div class="tl-time">DAY 31-60 ▸ 驗證期</div>
-                    <h4>第一份風險掃描 + 展示案例</h4>
-                    <p>為圓桌成員交付第一版即時風險儀表板（先 3-5 家試用）。識別 1 家最適合「半價+分潤」的展示案例。開始收圓桌年費 NT$36,000 起。在 Threads 上分享「老闆看不見的風險」系列
-                        → 建立專業定位。</p>
+                <div class="ix-card">
+                    <h3>🛡️ 保險經紀 × 客戶管道</h3>
+                    <p>保險客戶 = 中小企業主名單。她已經知道他們的風險和財務——不需要從零開始。</p>
+                    <ul>
+                        <li>理賠數據 = 獨家風險信號</li>
+                        <li>已建立信任 → 延伸到自動化諮詢</li>
+                        <li>Day 1 即有 8-15 位 warm leads</li>
+                    </ul>
+                    <div class="ix-revenue">💰 現有收入流 — 佣金制</div>
                 </div>
-                <div class="tl-item">
-                    <div class="tl-time">DAY 61-90 ▸ 協議期</div>
-                    <h4>首筆營收分潤簽約</h4>
-                    <p>與展示案例簽訂「半價顧問費 + 1% 營收分潤 × 3年」協議。信任圈擴展至 15-20 人。風險儀表板接入保險理賠數據，建立獨家風險評分 v1。讓早期成員推薦新成員（轉介獎勵：減免一季年費）。
-                    </p>
+                <div class="ix-card">
+                    <h3>🌍 國際貿易 × 關稅危機</h3>
+                    <p>青宇 114/5-6 有 NT$500萬 零稅率出口。32% 關稅直接衝擊這條線——逼著她必須自動化降本。</p>
+                    <ul>
+                        <li>出口數據 = 真實急迫性</li>
+                        <li>南台灣出口商都面臨同樣壓力</li>
+                        <li>跨境合規 + ESG = 藍海機會</li>
+                    </ul>
+                    <div class="ix-revenue">⚠️ 32% 關稅 = 生存級急迫性</div>
                 </div>
-                <div class="tl-item">
-                    <div class="tl-time">6-12 個月 ▸ 飛輪期</div>
-                    <h4>四合一系統啟動</h4>
-                    <p>信任圈 25-30 人，形成南台灣 SME 風險情報網。3-5 家營收分潤合作。風險儀表板 SaaS 化 → 獨立訂閱收入。CBAM 2026 需求窗口打開 →
-                        跨境風險模組上線。年被動收入目標：NT$150-300萬。</p>
+                <div class="ix-card">
+                    <h3>🌱 ESG 合規 × 監管風險</h3>
+                    <p>歐盟 CBAM 2026 全面實施。出口商必須符合碳邊界調整機制——Jannice 是南台灣少數懂這個的人。</p>
+                    <ul>
+                        <li>法規早期預警（比客戶早 3-6 個月）</li>
+                        <li>ESG + AI 結合 = 自動化合規</li>
+                        <li>不做報告 → 做策略判斷</li>
+                    </ul>
+                    <div class="ix-revenue">📋 顧問費 + 營收分潤</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- REVENUE MODEL -->
+    <!-- SECTION 6: THE NUMBERS -->
     <section>
         <div class="container">
-            <span class="stag stag-e">收入模型 REVENUE STACK</span>
-            <h2 class="sh">四層被動收入堆疊</h2>
-            <p class="sd">不是選一條路，而是四條路同時建構護城河</p>
+            <span class="stag stag-g">陸 THE NUMBERS</span>
+            <h2 class="sh">V3 收入引擎<br><small style="font-size:.45em;color:var(--text3);font-weight:400">Four Revenue
+                    Streams, One Ecosystem</small></h2>
+            <p class="sd">
+                不是從零開始。青宇的成本節省 + 雷喜達的技術銷售 + 保險佣金 + 信任圈 SaaS = 四層複合收入。
+            </p>
 
             <div class="cg" style="grid-template-columns:repeat(2,1fr)">
                 <div class="cd">
-                    <div class="cd-icon" style="background:rgba(124,106,239,.1)">1️⃣</div>
-                    <h3>信任圈年費</h3>
-                    <p>25人 × NT$80,000 = <strong style="color:var(--emerald2)">NT$200萬/年</strong></p>
-                    <p style="margin-top:8px">晚餐圓桌 + 風險預警 + 人脈網路。低門檻，高黏著度，網路效應驅動。</p>
+                    <div class="cd-icon" style="background:rgba(232,98,26,.1)">1️⃣</div>
+                    <h3>青宇成本節省</h3>
+                    <p>人力 NT$717萬 × 30% 自動化 = <strong style="color:var(--gold2)">NT$215 萬/年</strong></p>
+                    <p style="margin-top:8px">自家工廠直接降本。不是營收增加——是成本消失。最確定的 ROI。</p>
                 </div>
                 <div class="cd">
-                    <div class="cd-icon" style="background:rgba(245,166,35,.1)">2️⃣</div>
-                    <h3>營收分潤組合</h3>
-                    <p>10家存活 × NT$50萬 = <strong style="color:var(--emerald2)">NT$500萬/年</strong></p>
-                    <p style="margin-top:8px">半價顧問費入場 → 3年期 1-2% 營收分潤。需 15 家建倉，預期淨存活 10 家。</p>
+                    <div class="cd-icon" style="background:rgba(201,168,76,.1)">2️⃣</div>
+                    <h3>雷喜達技術銷售</h3>
+                    <p>5家工廠 × NT$100萬整合費 = <strong style="color:var(--gold2)">NT$500 萬/年</strong></p>
+                    <p style="margin-top:8px">用青宇的成功案例銷售。JAKA 機器人 + Basler 視覺 + Grafana 儀表板打包方案。</p>
                 </div>
                 <div class="cd">
-                    <div class="cd-icon" style="background:rgba(14,165,233,.1)">3️⃣</div>
+                    <div class="cd-icon" style="background:rgba(232,98,26,.1)">3️⃣</div>
                     <h3>風險儀表板 SaaS</h3>
-                    <p>50用戶 × NT$3,000/月 = <strong style="color:var(--emerald2)">NT$180萬/年</strong></p>
-                    <p style="margin-top:8px">信任圈外的 SME 也能訂閱。獨家數據模型 = 競爭壁壘。可逐步擴展到全台灣。</p>
+                    <p>50用戶 × NT$3,000/月 = <strong style="color:var(--gold2)">NT$180 萬/年</strong></p>
+                    <p style="margin-top:8px">信任圈 + 保險客戶 → 訂閱即時風險監控。獨家數據模型 = 競爭壁壘。</p>
                 </div>
                 <div class="cd">
-                    <div class="cd-icon" style="background:rgba(16,185,129,.1)">4️⃣</div>
-                    <h3>保險佣金（現有）</h3>
-                    <p>信任圈成員 → 交叉銷售 = <strong style="color:var(--emerald2)">+30% 佣金成長</strong></p>
-                    <p style="margin-top:8px">信任圈擴大 → 保險客戶自然增加。現有收入流不會消失，反而被放大。</p>
+                    <div class="cd-icon" style="background:rgba(201,168,76,.1)">4️⃣</div>
+                    <h3>保險交叉銷售</h3>
+                    <p>自動化客戶 → 新險種需求 = <strong style="color:var(--gold2)">+30% 佣金成長</strong></p>
+                    <p style="margin-top:8px">工廠自動化 → 設備險、產品責任險需求增加。每個技術客戶都是保險客戶。</p>
                 </div>
             </div>
 
+            <!-- Total -->
             <div class="fp-block" style="margin-top:40px;text-align:center">
-                <p style="color:var(--text3);font-size:13px;letter-spacing:1px;font-weight:600">5 年目標 · TOTAL PASSIVE
-                    INCOME</p>
-                <p style="font-size:2.8rem;font-weight:900;margin:12px 0"><span class="grad-gold">NT$ 880萬+</span><span
-                        style="font-size:1rem;color:var(--text3);font-weight:400"> /年</span></p>
-                <p style="color:var(--text2);font-size:.9rem">信任圈 200萬 + 營收分潤 500萬 + SaaS 180萬 + 保險交叉銷售加成</p>
+                <p style="color:var(--text3);font-size:13px;letter-spacing:1px;font-weight:600">3 年目標 · TOTAL ANNUAL
+                    TARGET</p>
+                <p style="font-size:2.8rem;font-weight:900;margin:12px 0"><span class="grad-gold">NT$1,200
+                        萬+</span><span style="font-size:1rem;color:var(--text3);font-weight:400"> /年</span></p>
+                <p style="color:var(--text2);font-size:.9rem">成本節省 215萬 + 技術銷售 500萬 + SaaS 180萬 + 保險加成 · 上修自 V2 的 880萬
+                </p>
             </div>
         </div>
     </section>
@@ -1162,23 +1547,23 @@
     <section class="cta">
         <div class="container">
             <div class="cta-box">
-                <h2>答案不是做更多事<br>而是站在<span class="grad-purple">對的交叉口</span></h2>
-                <p>Jannice 不需要成為網紅。不需要賣課程。不需要做任何她目前沒有在做的事。<br>她只需要把已經擁有的四個身份——<strong>系統化地連結起來</strong>。</p>
+                <h2>她不需要更多技能<br>她需要<span class="grad-purple">把工廠變成展示間</span></h2>
+                <p>Jannice 已經擁有一切：工廠、技術、客戶管道、市場急迫性。<br>現在只需要<strong>系統化地連結</strong>，讓青宇成為全台灣最好的 AI 工廠案例。</p>
                 <div class="cta-3">
                     <div>
-                        <div class="sn" style="color:var(--accent2)">STEP 1</div>
-                        <h4>晚餐圓桌</h4>
-                        <p>保險客戶→信任圈，8人開始，屏東在地餐廳</p>
+                        <div class="sn" style="color:var(--accent2)">STEP 1 · 90天</div>
+                        <h4>青宇部署</h4>
+                        <p>在自家工廠部署第一條 AI 產線，產出真實 ROI 數據</p>
                     </div>
                     <div>
-                        <div class="sn" style="color:var(--gold2)">STEP 2</div>
-                        <h4>風險儀表板</h4>
-                        <p>用她的 AI 技術交付即時監控，不是 PDF</p>
+                        <div class="sn" style="color:var(--gold2)">STEP 2 · 180天</div>
+                        <h4>案例包裝</h4>
+                        <p>用青宇的 P&L 數據打包成銷售素材，開始對保險客戶推廣</p>
                     </div>
                     <div>
-                        <div class="sn" style="color:var(--teal2)">STEP 3</div>
-                        <h4>營收分潤</h4>
-                        <p>一個展示案例開始，用成功說話</p>
+                        <div class="sn" style="color:var(--gold2)">STEP 3 · 365天</div>
+                        <h4>規模化</h4>
+                        <p>簽下 5 家工廠客戶，啟動 SaaS 訂閱，建立南台灣製造業 AI 品牌</p>
                     </div>
                 </div>
             </div>
@@ -1187,8 +1572,8 @@
 
     <footer class="footer">
         <div class="container">
-            <p>Strategy V2 for <a href="https://instagram.com/jannicelife" target="_blank">@jannicelife</a> · Built on
-                First Principles · Reviewed by 🚀 Antigravity Agent · February 2026</p>
+            <p>Strategy V3 for <a href="https://instagram.com/jannicelife" target="_blank">@jannicelife</a> · Built on
+                First Principles · Real Data from 401 VAT Returns · 🚀 Antigravity Agent · February 2026</p>
         </div>
     </footer>
 
