@@ -1,32 +1,25 @@
 /**
  * Mirror Agent — Self-Review and Improvement
- * 
- * Pattern: meta-learning-qa (openclaw → email-os)
- * Don't just check work — track what feedback actually improves outcomes.
- * 
- * Persistence: PostgreSQL via Drizzle ORM
- * 
- * Wisdom Question: "Am I getting better at getting better?"
  */
 
 import bus from '../bus.js';
 import { db, isDbAvailable } from '../db/db.js';
 import { reviews as reviewsTable } from '../db/schema.js';
-import { eq, desc } from 'drizzle-orm';
+import { desc } from 'drizzle-orm';
+import type { Classification, SeedStats, Review, ReviewHistory, Feedback, Evolution, AgentConfig } from '../types.js';
 
 class MirrorAgent {
-    constructor(config = {}) {
+    private reviewCycle: number;
+    private reviews: Review[] = [];
+    private evolutionLog: Evolution[] = [];
+    private cycleCount: number = 0;
+
+    constructor(config: AgentConfig = {}) {
         this.reviewCycle = config.reviewCycle || 10;
-        this.reviews = [];
-        this.evolutionLog = [];
-        this.cycleCount = 0;
     }
 
-    /**
-     * Review classify agent's work
-     */
-    async reviewClassifications(classifications) {
-        const review = {
+    async reviewClassifications(classifications: Classification[]): Promise<Review> {
+        const review: Review = {
             agent: 'classify',
             cycleNumber: ++this.cycleCount,
             sampleSize: classifications.length,
@@ -41,11 +34,11 @@ class MirrorAgent {
         review.scores.lowConfidenceRate = confidences.filter(c => c < 0.5).length / (confidences.length || 1);
 
         const zones = classifications.map(c => c.zone);
-        const zoneDist = { red: 0, yellow: 0, green: 0 };
+        const zoneDist: Record<string, number> = { red: 0, yellow: 0, green: 0 };
         zones.forEach(z => zoneDist[z]++);
         review.scores.zoneBalance = zoneDist;
 
-        if (review.scores.lowConfidenceRate > 0.3) {
+        if ((review.scores.lowConfidenceRate as number) > 0.3) {
             review.feedback.push({ type: 'question', message: 'Over 30% of emails have low confidence — do we need more signal sources?', actionable: true });
         }
         if (classifications.length > 0 && zoneDist.red / classifications.length > 0.5) {
@@ -61,16 +54,15 @@ class MirrorAgent {
             review.evolution = this.evolve();
         }
 
-        // Persist to DB
-        if (isDbAvailable()) {
+        if (isDbAvailable() && db) {
             db.insert(reviewsTable).values({
                 agent: review.agent,
                 cycleNumber: review.cycleNumber,
                 sampleSize: review.sampleSize,
                 scores: review.scores,
-                feedback: review.feedback,
-                evolution: review.evolution,
-            }).catch(err => console.warn(`   ⚠️  DB review insert: ${err.message}`));
+                feedback: review.feedback as unknown[],
+                evolution: review.evolution as Record<string, unknown> | null,
+            }).catch(err => console.warn(`   ⚠️  DB review insert: ${(err as Error).message}`));
         }
 
         bus.publish('mirror', 'review.completed', {
@@ -83,11 +75,8 @@ class MirrorAgent {
         return review;
     }
 
-    /**
-     * Review seed agent's work
-     */
-    async reviewSeeds(seedStats) {
-        const review = {
+    async reviewSeeds(seedStats: SeedStats): Promise<Review> {
+        const review: Review = {
             agent: 'seed',
             timestamp: new Date().toISOString(),
             scores: {},
@@ -100,18 +89,18 @@ class MirrorAgent {
         if (seedStats.active > 20) {
             review.feedback.push({ type: 'question', message: `${seedStats.active} active seeds — planting too many without harvesting?`, actionable: true });
         }
-        if (review.scores.escalationRate > 0.4) {
+        if ((review.scores.escalationRate as number) > 0.4) {
             review.feedback.push({ type: 'question', message: 'Over 40% of seeds escalating — shelf-lives too short?', actionable: true });
         }
 
         this.reviews.push(review);
 
-        if (isDbAvailable()) {
+        if (isDbAvailable() && db) {
             db.insert(reviewsTable).values({
                 agent: review.agent,
                 scores: review.scores,
-                feedback: review.feedback,
-            }).catch(err => console.warn(`   ⚠️  DB review insert: ${err.message}`));
+                feedback: review.feedback as unknown[],
+            }).catch(err => console.warn(`   ⚠️  DB review insert: ${(err as Error).message}`));
         }
 
         bus.publish('mirror', 'review.completed', {
@@ -122,9 +111,9 @@ class MirrorAgent {
         return review;
     }
 
-    evolve() {
+    evolve(): Evolution {
         const recent = this.reviews.slice(-this.reviewCycle);
-        const evolution = {
+        const evolution: Evolution = {
             cycle: this.cycleCount,
             timestamp: new Date().toISOString(),
             feedbackPatterns: {},
@@ -149,7 +138,7 @@ class MirrorAgent {
 
         const classifyReviews = recent.filter(r => r.agent === 'classify');
         if (classifyReviews.length >= 3) {
-            const confidences = classifyReviews.map(r => r.scores?.avgConfidence || 0);
+            const confidences = classifyReviews.map(r => (r.scores?.avgConfidence as number) || 0);
             const trend = confidences[confidences.length - 1] - confidences[0];
             if (trend > 0.1) evolution.recommendations.push({ priority: 'positive', message: `Confidence improving (+${(trend * 100).toFixed(1)}%)` });
             if (trend < -0.1) evolution.recommendations.push({ priority: 'warning', message: `Confidence declining (${(trend * 100).toFixed(1)}%)` });
@@ -160,17 +149,17 @@ class MirrorAgent {
         return evolution;
     }
 
-    async getHistory() {
-        if (isDbAvailable()) {
+    async getHistory(): Promise<ReviewHistory> {
+        if (isDbAvailable() && db) {
             try {
                 const dbReviews = await db.select().from(reviewsTable).orderBy(desc(reviewsTable.createdAt));
-                return { reviews: dbReviews, evolutions: this.evolutionLog, totalCycles: this.cycleCount };
+                return { reviews: dbReviews as unknown as Review[], evolutions: this.evolutionLog, totalCycles: this.cycleCount };
             } catch { /* fallback */ }
         }
         return { reviews: this.reviews, evolutions: this.evolutionLog, totalCycles: this.cycleCount };
     }
 
-    avg(arr) {
+    private avg(arr: number[]): number {
         if (arr.length === 0) return 0;
         return Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 100) / 100;
     }

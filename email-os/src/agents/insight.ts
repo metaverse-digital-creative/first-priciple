@@ -1,41 +1,52 @@
 /**
  * Insight Agent — Cross-Thread Intelligence
- * 
- * Novel Pattern: thread-intelligence
- * Model threads as living entities with velocity, temperature, and trajectory.
- * 
- * Persistence: PostgreSQL via Drizzle ORM
- * 
- * Wisdom Question: "What story does this thread tell across time?"
  */
 
 import bus from '../bus.js';
 import { db, isDbAvailable } from '../db/db.js';
 import { threads as threadsTable, insights as insightsTable } from '../db/schema.js';
-import { eq, desc } from 'drizzle-orm';
+import { desc } from 'drizzle-orm';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import type { Email, Classification, Zone, Trajectory, Insight, Thread } from '../types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = join(__dirname, '..', '..');
 const DATA_DIR = join(ROOT, 'data');
 
-class InsightAgent {
-    constructor() {
-        this.threads = new Map();
-        this.insights = [];
-    }
+interface ThreadMessage {
+    id: string;
+    from?: string;
+    zone: Zone;
+    date: string;
+}
 
-    async init() {
+interface InternalThread {
+    threadId: string;
+    subject: string;
+    participants: Set<string>;
+    messages: ThreadMessage[];
+    zones: Zone[];
+    participantCount: number;
+    messageCount: number;
+    velocity: number;
+    temperature: number;
+    trajectory: Trajectory;
+    firstMessageAt: string;
+    lastMessageAt: string;
+}
+
+class InsightAgent {
+    private threads: Map<string, InternalThread> = new Map();
+    private insights: Insight[] = [];
+
+    async init(): Promise<void> {
         this.insights = await this._loadInsights();
     }
 
-    /**
-     * Update thread intelligence with a new email
-     */
-    async trackThread(email, classification) {
+    async trackThread(email: Email, classification: Classification): Promise<InternalThread | null> {
         const threadId = email.threadId;
         if (!threadId) return null;
 
@@ -44,7 +55,7 @@ class InsightAgent {
             thread = {
                 threadId,
                 subject: email.subject || '(no subject)',
-                participants: new Set(),
+                participants: new Set<string>(),
                 messages: [],
                 zones: [],
                 participantCount: 0,
@@ -58,26 +69,21 @@ class InsightAgent {
             this.threads.set(threadId, thread);
         }
 
-        // Update thread data
         if (email.from?.email) thread.participants.add(email.from.email);
         thread.messages.push({
-            id: email.id,
-            from: email.from?.email,
-            zone: classification.zone,
-            date: email.date || new Date().toISOString()
+            id: email.id, from: email.from?.email,
+            zone: classification.zone, date: email.date || new Date().toISOString()
         });
         thread.zones.push(classification.zone);
         thread.lastMessageAt = email.date || new Date().toISOString();
         thread.participantCount = thread.participants.size;
         thread.messageCount = thread.messages.length;
 
-        // Calculate intelligence
         this.updateVelocity(thread);
         this.updateTemperature(thread);
         this.updateTrajectory(thread);
 
-        // Persist to DB
-        if (isDbAvailable()) {
+        if (isDbAvailable() && db) {
             try {
                 await db.insert(threadsTable).values({
                     threadId: thread.threadId,
@@ -106,11 +112,10 @@ class InsightAgent {
                     }
                 });
             } catch (err) {
-                console.warn(`   ⚠️  DB thread upsert: ${err.message}`);
+                console.warn(`   ⚠️  DB thread upsert: ${(err as Error).message}`);
             }
         }
 
-        // Check for insight triggers
         await this.checkInsightTriggers(thread);
 
         bus.publish('insight', 'thread.updated', {
@@ -122,14 +127,14 @@ class InsightAgent {
         return thread;
     }
 
-    updateVelocity(thread) {
+    private updateVelocity(thread: InternalThread): void {
         if (thread.messages.length < 2) { thread.velocity = 0; return; }
-        const dates = thread.messages.map(m => new Date(m.date)).sort((a, b) => a - b);
+        const dates = thread.messages.map(m => new Date(m.date).getTime()).sort((a, b) => a - b);
         const span = (dates[dates.length - 1] - dates[0]) / 86400000;
         thread.velocity = span > 0 ? Math.round((thread.messages.length / span) * 100) / 100 : 0;
     }
 
-    updateTemperature(thread) {
+    private updateTemperature(thread: InternalThread): void {
         let temp = 0;
         temp += Math.min(thread.messages.length * 10, 30);
         temp += Math.min(thread.participantCount * 10, 20);
@@ -140,7 +145,7 @@ class InsightAgent {
         temp += redCount * 15;
         temp += yellowCount * 5;
 
-        const lastMsg = new Date(thread.lastMessageAt);
+        const lastMsg = new Date(thread.lastMessageAt).getTime();
         const hoursSince = (Date.now() - lastMsg) / 3600000;
         if (hoursSince < 2) temp += 20;
         else if (hoursSince < 24) temp += 10;
@@ -149,10 +154,10 @@ class InsightAgent {
         thread.temperature = Math.max(0, Math.min(100, temp));
     }
 
-    updateTrajectory(thread) {
+    private updateTrajectory(thread: InternalThread): void {
         if (thread.messages.length < 3) { thread.trajectory = 'new'; return; }
         const recentZones = thread.zones.slice(-3);
-        const weights = { red: 3, yellow: 2, green: 1 };
+        const weights: Record<string, number> = { red: 3, yellow: 2, green: 1 };
         const recentHeat = recentZones.reduce((sum, z) => sum + (weights[z] || 0), 0) / 3;
         const histHeat = thread.zones.reduce((sum, z) => sum + (weights[z] || 0), 0) / thread.zones.length;
 
@@ -161,45 +166,45 @@ class InsightAgent {
         else thread.trajectory = 'steady';
     }
 
-    async checkInsightTriggers(thread) {
+    private async checkInsightTriggers(thread: InternalThread): Promise<void> {
         if (thread.velocity > 3) {
             await this.generateInsight({
                 threadId: thread.threadId, type: 'velocity-spike',
                 message: `Thread "${thread.subject}" has high velocity (${thread.velocity} msgs/day)`,
-                severity: 'warning', data: { velocity: thread.velocity }
+                severity: 'warning', data: { velocity: thread.velocity }, createdAt: ''
             });
         }
         if (thread.temperature > 80) {
             await this.generateInsight({
                 threadId: thread.threadId, type: 'hot-thread',
                 message: `Thread "${thread.subject}" is very hot (temp: ${thread.temperature})`,
-                severity: 'critical', data: { temperature: thread.temperature }
+                severity: 'critical', data: { temperature: thread.temperature }, createdAt: ''
             });
         }
         if (thread.participantCount >= 5) {
             await this.generateInsight({
                 threadId: thread.threadId, type: 'multi-party',
                 message: `Thread "${thread.subject}" has ${thread.participantCount} participants`,
-                severity: 'info', data: { participants: [...thread.participants] }
+                severity: 'info', data: { participants: [...thread.participants] }, createdAt: ''
             });
         }
     }
 
-    async generateInsight(insight) {
-        const full = { ...insight, createdAt: new Date().toISOString() };
+    async generateInsight(insight: Insight): Promise<void> {
+        const full: Insight = { ...insight, createdAt: new Date().toISOString() };
         this.insights.push(full);
 
-        if (isDbAvailable()) {
+        if (isDbAvailable() && db) {
             try {
                 await db.insert(insightsTable).values({
                     threadId: insight.threadId,
                     type: insight.type,
                     message: insight.message,
                     severity: insight.severity || 'info',
-                    data: insight.data || {},
+                    data: (insight.data || {}) as Record<string, unknown>,
                 });
             } catch (err) {
-                console.warn(`   ⚠️  DB insight insert: ${err.message}`);
+                console.warn(`   ⚠️  DB insight insert: ${(err as Error).message}`);
                 this._saveToFile();
             }
         } else {
@@ -211,12 +216,12 @@ class InsightAgent {
         });
     }
 
-    async getHotThreads(limit = 5) {
-        if (isDbAvailable()) {
+    async getHotThreads(limit: number = 5): Promise<InternalThread[]> {
+        if (isDbAvailable() && db) {
             try {
                 return await db.select().from(threadsTable)
                     .orderBy(desc(threadsTable.temperature))
-                    .limit(limit);
+                    .limit(limit) as unknown as InternalThread[];
             } catch { /* fallback */ }
         }
         return [...this.threads.values()]
@@ -224,20 +229,20 @@ class InsightAgent {
             .slice(0, limit);
     }
 
-    async getRecentInsights(limit = 10) {
-        if (isDbAvailable()) {
+    async getRecentInsights(limit: number = 10): Promise<Insight[]> {
+        if (isDbAvailable() && db) {
             try {
                 return await db.select().from(insightsTable)
                     .orderBy(desc(insightsTable.createdAt))
-                    .limit(limit);
+                    .limit(limit) as unknown as Insight[];
             } catch { /* fallback */ }
         }
         return this.insights.slice(-limit);
     }
 
-    async _loadInsights() {
-        if (isDbAvailable()) {
-            try { return await db.select().from(insightsTable); }
+    private async _loadInsights(): Promise<Insight[]> {
+        if (isDbAvailable() && db) {
+            try { return await db.select().from(insightsTable) as unknown as Insight[]; }
             catch { /* fallback */ }
         }
         const insightFile = join(DATA_DIR, 'insights.json');
@@ -248,7 +253,7 @@ class InsightAgent {
         return [];
     }
 
-    _saveToFile() {
+    private _saveToFile(): void {
         if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
         writeFileSync(join(DATA_DIR, 'insights.json'), JSON.stringify(this.insights, null, 2));
     }

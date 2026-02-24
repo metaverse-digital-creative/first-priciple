@@ -1,12 +1,10 @@
 /**
  * Email-OS Database Connection — Drizzle ORM + PostgreSQL
- * 
- * Singleton connection pool. Reads DATABASE_URL from .env.
- * Usage: import { db } from './db/db.js';
+ * Singleton pool. Reads DATABASE_URL from .env.
  */
 
 import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 import * as schema from './schema.js';
 
@@ -25,20 +23,13 @@ const pool = process.env.DATABASE_URL
     })
     : null;
 
-/** @type {import('drizzle-orm/node-postgres').NodePgDatabase<typeof schema> | null} */
-export const db = pool ? drizzle(pool, { schema }) : null;
+export const db: NodePgDatabase<typeof schema> | null = pool ? drizzle(pool, { schema }) : null;
 
-/**
- * Check if DB is available
- */
-export function isDbAvailable() {
+export function isDbAvailable(): boolean {
     return db !== null;
 }
 
-/**
- * Graceful shutdown
- */
-export async function closeDb() {
+export async function closeDb(): Promise<void> {
     if (pool) {
         await pool.end();
         console.log('🔌 Database pool closed');

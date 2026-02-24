@@ -1,35 +1,27 @@
 /**
  * Gmail OAuth2 Authentication
- * 
- * Handles the OAuth2 flow for Gmail API access:
- * 1. Reads credentials from .env
- * 2. Opens browser for user consent
- * 3. Saves refresh token for future use
- * 
- * Usage: node src/gmail/auth.js
  */
 
 import { google } from 'googleapis';
-import { createServer } from 'node:http';
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { execSync } from 'node:child_process';
+import type { OAuth2Client, Credentials } from 'google-auth-library';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = join(__dirname, '..', '..');
 
-// Load env
-function loadEnv() {
+function loadEnv(): Record<string, string> {
     const envPath = join(ROOT, '.env');
     if (!existsSync(envPath)) {
         console.error('❌ No .env file found. Copy .env.example to .env and fill in your credentials.');
-        console.error('   cp .env.example .env');
         process.exit(1);
     }
 
-    const env = {};
+    const env: Record<string, string> = {};
     const content = readFileSync(envPath, 'utf8');
     for (const line of content.split('\n')) {
         const trimmed = line.trim();
@@ -40,66 +32,44 @@ function loadEnv() {
     return env;
 }
 
-/**
- * Create OAuth2 client from env credentials
- */
-function createOAuth2Client(env) {
+function createOAuth2Client(env: Record<string, string>): OAuth2Client {
     const clientId = env.GMAIL_CLIENT_ID;
     const clientSecret = env.GMAIL_CLIENT_SECRET;
     const redirectUri = env.GMAIL_REDIRECT_URI || 'http://localhost:3000/oauth2callback';
 
     if (!clientId || !clientSecret || clientId === 'your-client-id.apps.googleusercontent.com') {
         console.error('❌ Missing Gmail credentials in .env');
-        console.error('   1. Go to https://console.cloud.google.com/apis/credentials');
-        console.error('   2. Create OAuth 2.0 Client ID (Desktop App)');
-        console.error('   3. Fill GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET in .env');
         process.exit(1);
     }
 
     return new google.auth.OAuth2(clientId, clientSecret, redirectUri);
 }
 
-/**
- * Load saved token if available
- */
-function loadSavedToken(env) {
-    // Check .env for pre-filled refresh token
+function loadSavedToken(env: Record<string, string>): Credentials | null {
     if (env.GMAIL_REFRESH_TOKEN) {
         return { refresh_token: env.GMAIL_REFRESH_TOKEN };
     }
 
-    // Check token file
     const tokenDir = join(ROOT, '.tokens');
     const tokenFile = join(tokenDir, 'gmail.json');
     if (existsSync(tokenFile)) {
-        try {
-            return JSON.parse(readFileSync(tokenFile, 'utf8'));
-        } catch {
-            return null;
-        }
+        try { return JSON.parse(readFileSync(tokenFile, 'utf8')); }
+        catch { return null; }
     }
     return null;
 }
 
-/**
- * Save token to file
- */
-function saveToken(token) {
+function saveToken(token: Credentials): void {
     const tokenDir = join(ROOT, '.tokens');
-    if (!existsSync(tokenDir)) {
-        mkdirSync(tokenDir, { recursive: true });
-    }
+    if (!existsSync(tokenDir)) mkdirSync(tokenDir, { recursive: true });
     const tokenFile = join(tokenDir, 'gmail.json');
     writeFileSync(tokenFile, JSON.stringify(token, null, 2));
     console.log('✅ Token saved to .tokens/gmail.json');
 }
 
-/**
- * Run the interactive OAuth2 flow
- */
-async function runAuthFlow(oauth2Client) {
+async function runAuthFlow(oauth2Client: OAuth2Client): Promise<Credentials> {
     const config = JSON.parse(readFileSync(join(ROOT, 'config.json'), 'utf8'));
-    const scopes = config.gmail.scopes;
+    const scopes: string[] = config.gmail.scopes;
 
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
@@ -109,18 +79,12 @@ async function runAuthFlow(oauth2Client) {
 
     console.log('🔐 Opening browser for Gmail authorization...\n');
 
-    // Try to open browser
-    try {
-        execSync(`open "${authUrl}"`);
-    } catch {
-        console.log('📎 Open this URL in your browser:');
-        console.log(`   ${authUrl}\n`);
-    }
+    try { execSync(`open "${authUrl}"`); }
+    catch { console.log(`📎 Open this URL in your browser:\n   ${authUrl}\n`); }
 
-    // Start local server to catch the callback
-    return new Promise((resolve, reject) => {
-        const server = createServer(async (req, res) => {
-            const url = new URL(req.url, 'http://localhost:3000');
+    return new Promise<Credentials>((resolve, reject) => {
+        const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+            const url = new URL(req.url || '', 'http://localhost:3000');
 
             if (url.pathname === '/oauth2callback') {
                 const code = url.searchParams.get('code');
@@ -138,12 +102,11 @@ async function runAuthFlow(oauth2Client) {
 
                     res.end('✅ Email OS authenticated successfully! You can close this tab.');
                     console.log('\n✅ Gmail authenticated successfully!');
-                    console.log('   Run `npm run sync` to start processing your inbox.\n');
 
                     server.close();
                     resolve(tokens);
                 } catch (err) {
-                    res.end(`Error: ${err.message}`);
+                    res.end(`Error: ${(err as Error).message}`);
                     reject(err);
                 }
             }
@@ -153,7 +116,6 @@ async function runAuthFlow(oauth2Client) {
             console.log('⏳ Waiting for authorization (http://localhost:3000)...');
         });
 
-        // 5-minute timeout
         setTimeout(() => {
             server.close();
             reject(new Error('Auth timeout — try again'));
@@ -161,11 +123,7 @@ async function runAuthFlow(oauth2Client) {
     });
 }
 
-/**
- * Get authenticated OAuth2 client
- * Returns immediately if token exists, otherwise runs interactive flow
- */
-async function getAuthClient() {
+async function getAuthClient(): Promise<OAuth2Client> {
     const env = loadEnv();
     const oauth2Client = createOAuth2Client(env);
 
@@ -176,19 +134,18 @@ async function getAuthClient() {
         return oauth2Client;
     }
 
-    // Need fresh auth
     await runAuthFlow(oauth2Client);
     return oauth2Client;
 }
 
 export { getAuthClient, loadEnv, createOAuth2Client };
 
-// Run directly: node src/gmail/auth.js
+// Run directly: tsx src/gmail/auth.ts
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     getAuthClient()
         .then(() => process.exit(0))
         .catch(err => {
-            console.error('❌', err.message);
+            console.error('❌', (err as Error).message);
             process.exit(1);
         });
 }

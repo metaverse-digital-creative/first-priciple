@@ -1,33 +1,32 @@
 /**
  * Suggest Agent — Response and Action Suggestions
- * 
- * Pattern: invisible-intelligence (franchise-os → email-os)
- * The user sees suggestions, never raw classification data.
- * 
- * Persistence: PostgreSQL via Drizzle ORM
- * 
- * Wisdom Question: "What would the user do if they had 10x more time?"
  */
 
 import bus from '../bus.js';
 import { db, isDbAvailable } from '../db/db.js';
 import { suggestions as suggestionsTable } from '../db/schema.js';
 import { desc } from 'drizzle-orm';
+import type { Email, Classification, Seed, Action, Suggestion, AgentConfig } from '../types.js';
+
+interface ResponseDraft {
+    type: string;
+    template: string;
+    editable: boolean;
+}
 
 class SuggestAgent {
-    constructor(config = {}) {
+    private maxSuggestions: number;
+    private suggestions: Suggestion[] = [];
+
+    constructor(config: AgentConfig = {}) {
         this.maxSuggestions = config.maxSuggestions || 3;
-        this.suggestions = [];
     }
 
-    /**
-     * Generate suggestions for a classified email
-     */
-    async suggest(email, classification, seed = null) {
+    async suggest(email: Email, classification: Classification, seed: Seed | null = null): Promise<Suggestion> {
         const actions = this.generateActions(email, classification, seed);
         const responseDraft = this.draftResponse(email, classification);
 
-        const suggestion = {
+        const suggestion: Suggestion = {
             emailId: email.id,
             threadId: email.threadId,
             zone: classification.zone,
@@ -39,30 +38,27 @@ class SuggestAgent {
 
         this.suggestions.push(suggestion);
 
-        // Persist to DB
-        if (isDbAvailable()) {
+        if (isDbAvailable() && db) {
             db.insert(suggestionsTable).values({
                 emailId: email.id,
                 threadId: email.threadId,
                 zone: classification.zone,
                 actions: suggestion.actions,
-                responseDraft: suggestion.responseDraft,
+                responseDraft: suggestion.responseDraft as Record<string, unknown> | null,
                 priority: suggestion.priority,
-            }).catch(err => console.warn(`   ⚠️  DB suggest insert: ${err.message}`));
+            }).catch(err => console.warn(`   ⚠️  DB suggest insert: ${(err as Error).message}`));
         }
 
         bus.publish('suggest', 'suggestion.created', {
-            emailId: email.id,
-            zone: classification.zone,
-            actionCount: actions.length,
-            hasDraft: !!responseDraft
+            emailId: email.id, zone: classification.zone,
+            actionCount: actions.length, hasDraft: !!responseDraft
         });
 
         return suggestion;
     }
 
-    generateActions(email, classification, seed) {
-        const actions = [];
+    generateActions(email: Email, classification: Classification, seed: Seed | null): Action[] {
+        const actions: Action[] = [];
 
         if (classification.zone === 'red') {
             actions.push({ type: 'respond', label: '💬 Reply now', urgency: 'immediate', reason: 'Red zone — needs response within 2h' });
@@ -88,7 +84,7 @@ class SuggestAgent {
         return actions;
     }
 
-    draftResponse(email, classification) {
+    draftResponse(email: Email, classification: Classification): ResponseDraft | null {
         if (classification.zone === 'green') return null;
         const senderName = email.from?.name || email.from?.email?.split('@')[0] || 'there';
         const subject = email.subject || '';
@@ -102,7 +98,7 @@ class SuggestAgent {
         return { type: 'standard', template: `Hi ${senderName},\n\nThank you for your email regarding "${subject}". [Your response here]\n\nBest,`, editable: true };
     }
 
-    calculatePriority(classification, seed) {
+    calculatePriority(classification: Classification, seed: Seed | null): number {
         let priority = classification.score || 50;
         if (seed?.type === 'decision-needed') priority += 20;
         if (seed?.type === 'opportunity') priority += 15;
@@ -110,16 +106,16 @@ class SuggestAgent {
         return Math.min(100, priority);
     }
 
-    async getAll() {
-        if (isDbAvailable()) {
+    async getAll(): Promise<Suggestion[]> {
+        if (isDbAvailable() && db) {
             try {
-                return await db.select().from(suggestionsTable).orderBy(desc(suggestionsTable.priority));
+                return await db.select().from(suggestionsTable).orderBy(desc(suggestionsTable.priority)) as unknown as Suggestion[];
             } catch { /* fallback */ }
         }
         return this.suggestions.sort((a, b) => b.priority - a.priority);
     }
 
-    getLog() { return this.suggestions; }
+    getLog(): Suggestion[] { return this.suggestions; }
 }
 
 export { SuggestAgent };

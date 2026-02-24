@@ -1,21 +1,19 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 /**
  * Email OS — Main Entry Point
- * 
+ *
  * Usage:
- *   node src/index.js --sync      # Fetch + process inbox
- *   node src/index.js --triage    # Classify unread emails by zone
- *   node src/index.js --digest    # Show thread intelligence digest
- *   node src/index.js --seeds     # Show active seeds
- *   node src/index.js --stats     # Show bus + agent stats
- * 
- * State Machine: IDLE → SYNCING → PROCESSING → SUGGESTING → COMPLETE
+ *   tsx src/index.ts --sync      # Fetch + process inbox
+ *   tsx src/index.ts --triage    # Classify unread emails by zone
+ *   tsx src/index.ts --digest    # Show thread intelligence digest
+ *   tsx src/index.ts --seeds     # Show active seeds
+ *   tsx src/index.ts --stats     # Show bus + agent stats
  */
 
 import { getAuthClient } from './gmail/auth.js';
 import bus from './bus.js';
-import stateMachine, { STATES } from './state.js';
+import stateMachine, { State } from './state.js';
 import IngestAgent from './agents/ingest.js';
 import ClassifyAgent from './agents/classify.js';
 import SeedAgent from './agents/seed.js';
@@ -25,26 +23,24 @@ import MirrorAgent from './agents/mirror.js';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import type { Email, Classification, Seed } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT = join(__dirname, '..');
 const config = JSON.parse(readFileSync(join(ROOT, 'config.json'), 'utf8'));
 
-// Parse CLI args
 const args = process.argv.slice(2);
 const mode = args[0] || '--sync';
 
-// --- Main Pipeline ---
+// ─── Main Pipeline ─────────────────────────────────────────
 
-async function main() {
+async function main(): Promise<void> {
     console.log('\n📧 Email OS v1.0.0');
     console.log('   Every inbox is a signal field.\n');
 
-    // Authenticate
     const authClient = await getAuthClient();
 
-    // Initialize agents
     const ingest = new IngestAgent(authClient, config.agents.ingest);
     const classify = new ClassifyAgent(config.agents.classify);
     const seed = new SeedAgent();
@@ -52,10 +48,9 @@ async function main() {
     const insight = new InsightAgent();
     const mirror = new MirrorAgent(config.agents.mirror);
 
-    // Wire bus logging
     bus.subscribe('*', (msg) => {
         if (mode === '--verbose') {
-            console.log(`  [${msg.source}] ${msg.event}`, JSON.stringify(msg.payload).slice(0, 100));
+            console.log(`  [${msg.agent}] ${msg.type}`, JSON.stringify(msg.data).slice(0, 100));
         }
     });
 
@@ -67,47 +62,44 @@ async function main() {
             await runTriage(ingest, classify);
             break;
         case '--digest':
-            showDigest(insight, seed);
+            await showDigest(insight, seed);
             break;
         case '--seeds':
-            showSeeds(seed);
+            await showSeeds(seed);
             break;
         case '--stats':
-            showStats(seed, insight, mirror);
+            await showStats(seed, insight, mirror);
             break;
         case '--escalate':
-            runEscalation(seed);
+            await runEscalation(seed);
             break;
         default:
             console.log('Usage: email-os [--sync|--triage|--digest|--seeds|--stats|--escalate]');
     }
 }
 
-/**
- * Full sync pipeline: Ingest → Classify → Seed → Suggest → Insight → Mirror
- */
-async function runSync(ingest, classify, seed, suggest, insight, mirror) {
-    stateMachine.transition(STATES.SYNCING);
+async function runSync(
+    ingest: IngestAgent, classify: ClassifyAgent, seed: SeedAgent,
+    suggest: SuggestAgent, insight: InsightAgent, mirror: MirrorAgent
+): Promise<void> {
+    stateMachine.transition(State.SYNCING);
     console.log('📥 Syncing inbox...\n');
 
     try {
-        // 1. Ingest
         const emails = await ingest.run({ query: 'is:inbox is:unread' });
         console.log(`   Fetched ${emails.length} new email(s)\n`);
 
         if (emails.length === 0) {
             console.log('   ✨ Inbox zero — nothing to process.\n');
-            stateMachine.transition(STATES.COMPLETE);
+            stateMachine.transition(State.COMPLETE);
             return;
         }
 
-        // 2. Classify
-        stateMachine.transition(STATES.PROCESSING);
+        stateMachine.transition(State.PROCESSING);
         console.log('🏷️  Classifying by zone...\n');
         const classified = await classify.batchClassify(emails);
 
-        // Print zone summary
-        const zoneEmoji = { red: '🔴', yellow: '🟡', green: '🟢' };
+        const zoneEmoji: Record<string, string> = { red: '🔴', yellow: '🟡', green: '🟢' };
         for (const [zone, items] of Object.entries(classified)) {
             if (items.length > 0) {
                 console.log(`   ${zoneEmoji[zone]} ${zone.toUpperCase()} (${items.length})`);
@@ -119,26 +111,17 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
             }
         }
 
-        // 3. Seed + Suggest for non-green
-        stateMachine.transition(STATES.SUGGESTING);
+        stateMachine.transition(State.SUGGESTING);
         console.log('🌱 Planting seeds + generating suggestions...\n');
 
-        const allClassified = [
-            ...classified.red,
-            ...classified.yellow,
-            ...classified.green
-        ];
+        const allClassified = [...classified.red, ...classified.yellow, ...classified.green];
 
         for (const { email, classification } of allClassified) {
-            // Seed
             const planted = await seed.evaluate(email, classification);
+            await insight.trackThread(email, classification);
 
-            // Thread intelligence
-            insight.trackThread(email, classification);
-
-            // Suggest
             if (classification.zone !== 'green') {
-                const suggestion = suggest.suggest(email, classification, planted);
+                const suggestion = await suggest.suggest(email, classification, planted);
                 if (planted) {
                     console.log(`   🌱 ${planted.type}: "${email.subject}" (${planted.shelfLife} shelf-life)`);
                 }
@@ -148,7 +131,6 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
             }
         }
 
-        // 4. Mirror review
         console.log('\n🪞 Mirror review...');
         const classifyLog = await classify.getLog();
         const review = await mirror.reviewClassifications(classifyLog);
@@ -166,35 +148,30 @@ async function runSync(ingest, classify, seed, suggest, insight, mirror) {
             }
         }
 
-        // 5. Check escalations
-        const escalated = seed.checkEscalation();
+        const escalated = await seed.checkEscalation();
         if (escalated.length > 0) {
             console.log(`\n⚠️  ${escalated.length} seed(s) escalated to Red Zone!`);
         }
 
-        stateMachine.transition(STATES.COMPLETE);
+        stateMachine.transition(State.COMPLETE);
         console.log(`\n✅ Sync complete (${stateMachine.elapsed()}ms)`);
         console.log(`   ${bus.getStats().totalEvents} bus events processed\n`);
 
     } catch (err) {
-        stateMachine.transition(STATES.ERROR, { error: err.message });
-        console.error(`\n❌ Sync failed: ${err.message}`);
-        console.error('   Run with --verbose for details.\n');
+        stateMachine.transition(State.ERROR, { error: (err as Error).message });
+        console.error(`\n❌ Sync failed: ${(err as Error).message}`);
     }
 }
 
-/**
- * Quick triage: classify unread, show zones
- */
-async function runTriage(ingest, classify) {
+async function runTriage(ingest: IngestAgent, classify: ClassifyAgent): Promise<void> {
     console.log('🏷️  Quick triage — classifying unread...\n');
     const emails = await ingest.run({ query: 'is:inbox is:unread', maxResults: 20 });
     const classified = await classify.batchClassify(emails);
 
-    const zoneEmoji = { red: '🔴', yellow: '🟡', green: '🟢' };
+    const zoneEmoji: Record<string, string> = { red: '🔴', yellow: '🟡', green: '🟢' };
     for (const [zone, items] of Object.entries(classified)) {
         console.log(`${zoneEmoji[zone]} ${zone.toUpperCase()} Zone (${items.length})`);
-        for (const { email, classification } of items) {
+        for (const { email } of items) {
             const time = email.date ? new Date(email.date).toLocaleTimeString() : '';
             console.log(`  ${time} | ${(email.from?.name || email.from?.email || '').padEnd(25)} | ${email.subject}`);
         }
@@ -202,24 +179,21 @@ async function runTriage(ingest, classify) {
     }
 }
 
-/**
- * Show thread intelligence digest
- */
-function showDigest(insight, seed) {
+async function showDigest(insight: InsightAgent, seed: SeedAgent): Promise<void> {
     console.log('📊 Thread Intelligence Digest\n');
 
-    const hotThreads = insight.getHotThreads(5);
+    const hotThreads = await insight.getHotThreads(5);
     if (hotThreads.length > 0) {
         console.log('🔥 Hot Threads:');
         for (const t of hotThreads) {
-            const arrow = t.trajectory === 'rising' ? '📈' : t.trajectory === 'falling' ? '📉' : '➡️';
-            console.log(`  ${arrow} ${t.subject} (${t.temperature}° | ${t.velocity} msg/d | ${t.participants} people)`);
+            const arrow = t.trajectory === 'heating' ? '📈' : t.trajectory === 'cooling' ? '📉' : '➡️';
+            console.log(`  ${arrow} ${t.subject} (${t.temperature}° | ${t.velocity} msg/d | ${t.participantCount} people)`);
         }
     } else {
         console.log('   No thread data yet. Run --sync first.\n');
     }
 
-    const insights = insight.getRecentInsights(5);
+    const insights = await insight.getRecentInsights(5);
     if (insights.length > 0) {
         console.log('\n💡 Recent Insights:');
         for (const i of insights) {
@@ -227,57 +201,50 @@ function showDigest(insight, seed) {
         }
     }
 
-    const active = seed.getActive();
+    const active = await seed.getActive();
     if (active.length > 0) {
         console.log(`\n🌱 Active Seeds (${active.length}):`);
         for (const s of active.slice(0, 5)) {
             const icon = s.escalated ? '🚨' : '🌱';
-            console.log(`  ${icon} [${s.type}] ${s.source.subject} — expires ${new Date(s.expiresAt).toLocaleDateString()}`);
+            console.log(`  ${icon} [${s.type}] ${s.sourceSubject} — expires ${new Date(s.expiresAt).toLocaleDateString()}`);
         }
     }
-
     console.log();
 }
 
-/**
- * Show active seeds
- */
-function showSeeds(seed) {
+async function showSeeds(seed: SeedAgent): Promise<void> {
     console.log('🌱 Active Seeds\n');
-    const stats = seed.getStats();
+    const stats = await seed.getStats();
     console.log(`   Total: ${stats.total} | Active: ${stats.active} | Harvested: ${stats.harvested} | Escalated: ${stats.escalated}\n`);
 
-    const active = seed.getActive();
+    const active = await seed.getActive();
     for (const s of active) {
         const icon = s.escalated ? '🚨' : '🌱';
-        const remaining = Math.round((new Date(s.expiresAt) - Date.now()) / 3600000);
+        const remaining = Math.round((new Date(s.expiresAt).getTime() - Date.now()) / 3600000);
         console.log(`  ${icon} ${s.id} [${s.type}] ${s.zone.toUpperCase()}`);
-        console.log(`     ${s.source.subject}`);
-        console.log(`     From: ${s.source.from?.name || s.source.from?.email}`);
+        console.log(`     ${s.sourceSubject}`);
+        console.log(`     From: ${s.sourceFrom}`);
         console.log(`     Remaining: ${remaining > 0 ? remaining + 'h' : '⏰ EXPIRED'}`);
         console.log();
     }
 }
 
-/**
- * Show bus + agent stats
- */
-function showStats(seed, insight, mirror) {
+async function showStats(seed: SeedAgent, insight: InsightAgent, mirror: MirrorAgent): Promise<void> {
     console.log('📊 Email OS Stats\n');
 
     const busStats = bus.getStats();
     console.log('Insight Bus:');
     console.log(`  Total events: ${busStats.totalEvents}`);
-    console.log(`  By source:`, busStats.bySource);
+    console.log(`  Agents:`, busStats.agents);
     console.log();
 
-    const seedStats = seed.getStats();
+    const seedStats = await seed.getStats();
     console.log('Seeds:');
     console.log(`  Total: ${seedStats.total} | Active: ${seedStats.active} | Harvested: ${seedStats.harvested}`);
     console.log(`  By type:`, seedStats.byType);
     console.log();
 
-    const mirrorHistory = mirror.getHistory();
+    const mirrorHistory = await mirror.getHistory();
     console.log('Mirror:');
     console.log(`  Review cycles: ${mirrorHistory.totalCycles}`);
     console.log(`  Evolutions: ${mirrorHistory.evolutions.length}`);
@@ -289,24 +256,20 @@ function showStats(seed, insight, mirror) {
     console.log();
 }
 
-/**
- * Run seed escalation check
- */
-function runEscalation(seed) {
+async function runEscalation(seed: SeedAgent): Promise<void> {
     console.log('⏰ Checking seed escalations...\n');
-    const escalated = seed.checkEscalation();
+    const escalated = await seed.checkEscalation();
     if (escalated.length > 0) {
         console.log(`🚨 ${escalated.length} seed(s) escalated:`);
         for (const s of escalated) {
-            console.log(`  → ${s.id} [${s.type}] "${s.source.subject}"`);
+            console.log(`  → ${s.id} [${s.type}] "${s.sourceSubject}"`);
         }
     } else {
         console.log('   ✅ No seeds need escalation.\n');
     }
 }
 
-// Run
 main().catch(err => {
-    console.error('Fatal:', err.message);
+    console.error('Fatal:', (err as Error).message);
     process.exit(1);
 });

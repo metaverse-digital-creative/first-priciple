@@ -1,24 +1,15 @@
 /**
  * Seed Agent — Signal-to-Seed Pipeline
- * 
- * Novel Pattern: signal-to-seed-pipeline
- * Converts high-signal emails into typed seeds with shelf-life and escalation.
- * 
- * Pattern: seed-and-harvest-loop (research-lab → email-os)
- * Every email is a potential seed. Important threads are harvested into insights.
- * 
- * Persistence: PostgreSQL via Drizzle ORM (fallback: JSON file)
- * 
- * Wisdom Question: "If I ignore this for a week, will something be lost?"
  */
 
 import bus from '../bus.js';
 import { db, isDbAvailable } from '../db/db.js';
 import { seeds as seedsTable } from '../db/schema.js';
-import { eq, and, lt, gt, asc, desc } from 'drizzle-orm';
+import { eq, and, asc, desc } from 'drizzle-orm';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import type { Email, Classification, Seed, SeedType, SeedStats, Zone } from '../types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,29 +18,22 @@ const config = JSON.parse(readFileSync(join(ROOT, 'config.json'), 'utf8'));
 const DATA_DIR = join(ROOT, 'data');
 
 class SeedAgent {
-    constructor() {
-        this.seeds = [];
-        this.seedCounter = 0;
-    }
+    private seeds: Seed[] = [];
+    private seedCounter: number = 0;
 
-    async init() {
+    async init(): Promise<void> {
         this.seeds = await this._loadSeeds();
         this.seedCounter = this.seeds.length;
     }
 
-    /**
-     * Analyze a classified email and decide whether to plant a seed
-     */
-    async evaluate(email, classification) {
-        if (classification.zone === 'green' && classification.confidence > 0.7) {
-            return null;
-        }
+    async evaluate(email: Email, classification: Classification): Promise<Seed | null> {
+        if (classification.zone === 'green' && classification.confidence > 0.7) return null;
         const seedType = this.detectSeedType(email, classification);
         if (!seedType) return null;
         return await this.plant(email, seedType, classification);
     }
 
-    detectSeedType(email, classification) {
+    detectSeedType(email: Email, classification: Classification): SeedType | null {
         const text = `${email.subject} ${email.snippet}`.toLowerCase();
         const signals = classification.signals || [];
 
@@ -63,15 +47,12 @@ class SeedAgent {
         return null;
     }
 
-    /**
-     * Plant a seed from an email
-     */
-    async plant(email, type, classification) {
+    async plant(email: Email, type: SeedType, classification: Classification): Promise<Seed> {
         this.seedCounter++;
         const shelfLife = config.seeds.shelfLife[type] || '7d';
         const expiresAt = this.calculateExpiry(shelfLife);
 
-        const seed = {
+        const seed: Seed = {
             id: `s${this.seedCounter}`,
             type,
             status: 'planted',
@@ -92,8 +73,7 @@ class SeedAgent {
 
         this.seeds.push(seed);
 
-        // Persist to DB
-        if (isDbAvailable()) {
+        if (isDbAvailable() && db) {
             try {
                 await db.insert(seedsTable).values({
                     id: seed.id,
@@ -111,27 +91,20 @@ class SeedAgent {
                     expiresAt: new Date(seed.expiresAt),
                 }).onConflictDoNothing();
             } catch (err) {
-                console.warn(`   ⚠️  DB seed insert: ${err.message}`);
+                console.warn(`   ⚠️  DB seed insert: ${(err as Error).message}`);
             }
         } else {
             this._saveToFile();
         }
 
-        bus.publish('seed', 'seed.planted', {
-            seedId: seed.id, type, zone: classification.zone, expiresAt
-        });
-
+        bus.publish('seed', 'seed.planted', { seedId: seed.id, type, zone: classification.zone, expiresAt });
         return seed;
     }
 
-    /**
-     * Check for seeds approaching expiration and escalate
-     */
-    async checkEscalation() {
-        const escalated = [];
+    async checkEscalation(): Promise<Seed[]> {
+        const escalated: Seed[] = [];
 
-        if (isDbAvailable()) {
-            // DB-based escalation
+        if (isDbAvailable() && db) {
             try {
                 const activeSeedsRows = await db.select().from(seedsTable)
                     .where(and(
@@ -143,14 +116,14 @@ class SeedAgent {
                 for (const seed of activeSeedsRows) {
                     if (!seed.expiresAt || !seed.plantedAt) continue;
                     const expiry = new Date(seed.expiresAt);
-                    const remaining = expiry - now;
-                    const halfLife = (expiry - new Date(seed.plantedAt)) / 2;
+                    const remaining = expiry.getTime() - now.getTime();
+                    const halfLife = (expiry.getTime() - new Date(seed.plantedAt).getTime()) / 2;
 
                     if (remaining < halfLife) {
                         await db.update(seedsTable)
                             .set({ escalated: true, zone: 'red' })
                             .where(eq(seedsTable.id, seed.id));
-                        escalated.push({ ...seed, escalated: true, zone: 'red' });
+                        escalated.push({ ...seed, escalated: true, zone: 'red' as Zone } as unknown as Seed);
 
                         bus.publish('seed', 'seed.escalated', {
                             seedId: seed.id, type: seed.type,
@@ -159,16 +132,15 @@ class SeedAgent {
                     }
                 }
             } catch (err) {
-                console.warn(`   ⚠️  DB escalation check: ${err.message}`);
+                console.warn(`   ⚠️  DB escalation check: ${(err as Error).message}`);
             }
         } else {
-            // In-memory fallback
             const now = new Date();
             for (const seed of this.seeds) {
                 if (seed.status !== 'planted' || seed.escalated) continue;
                 const expiry = new Date(seed.expiresAt);
-                const remaining = expiry - now;
-                const halfLife = (expiry - new Date(seed.plantedAt)) / 2;
+                const remaining = expiry.getTime() - now.getTime();
+                const halfLife = (expiry.getTime() - new Date(seed.plantedAt).getTime()) / 2;
 
                 if (remaining < halfLife) {
                     seed.escalated = true;
@@ -186,13 +158,10 @@ class SeedAgent {
         return escalated;
     }
 
-    /**
-     * Harvest a seed
-     */
-    async harvest(seedId, outcome = {}) {
+    async harvest(seedId: string, outcome: Record<string, unknown> = {}): Promise<Seed | null> {
         const now = new Date().toISOString();
 
-        if (isDbAvailable()) {
+        if (isDbAvailable() && db) {
             try {
                 const [updated] = await db.update(seedsTable)
                     .set({ status: 'harvested', harvestedAt: new Date(now), outcome })
@@ -202,58 +171,51 @@ class SeedAgent {
                 if (updated) {
                     bus.publish('seed', 'seed.harvested', {
                         seedId, type: updated.type,
-                        duration: new Date(now) - new Date(updated.plantedAt)
+                        duration: new Date(now).getTime() - new Date(updated.plantedAt!).getTime()
                     });
                 }
-                return updated || null;
+                return (updated as unknown as Seed) || null;
             } catch (err) {
-                console.warn(`   ⚠️  DB harvest: ${err.message}`);
+                console.warn(`   ⚠️  DB harvest: ${(err as Error).message}`);
             }
         }
 
-        // Fallback
         const seed = this.seeds.find(s => s.id === seedId);
         if (!seed) return null;
         seed.status = 'harvested';
         seed.harvestedAt = now;
-        seed.outcome = outcome;
+        seed.outcome = outcome as Seed['outcome'];
         this._saveToFile();
         bus.publish('seed', 'seed.harvested', {
             seedId, type: seed.type,
-            duration: new Date(now) - new Date(seed.plantedAt)
+            duration: new Date(now).getTime() - new Date(seed.plantedAt).getTime()
         });
         return seed;
     }
 
-    /**
-     * Get active (unharvested) seeds, sorted by urgency
-     */
-    async getActive() {
-        if (isDbAvailable()) {
+    async getActive(): Promise<Seed[]> {
+        if (isDbAvailable() && db) {
             try {
                 return await db.select().from(seedsTable)
                     .where(eq(seedsTable.status, 'planted'))
-                    .orderBy(asc(seedsTable.expiresAt));
+                    .orderBy(asc(seedsTable.expiresAt)) as unknown as Seed[];
             } catch { /* fallback */ }
         }
         return this.seeds
             .filter(s => s.status === 'planted')
             .sort((a, b) => {
                 if (a.zone !== b.zone) return a.zone === 'red' ? -1 : 1;
-                return new Date(a.expiresAt) - new Date(b.expiresAt);
+                return new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime();
             });
     }
 
-    /**
-     * Get seed stats
-     */
-    async getStats() {
-        if (isDbAvailable()) {
+    async getStats(): Promise<SeedStats> {
+        if (isDbAvailable() && db) {
             try {
                 const all = await db.select().from(seedsTable);
                 const active = all.filter(s => s.status === 'planted');
                 const harvested = all.filter(s => s.status === 'harvested');
-                const byType = {};
+                const byType: Record<string, number> = {};
                 for (const s of all) byType[s.type] = (byType[s.type] || 0) + 1;
                 return {
                     total: all.length, active: active.length, harvested: harvested.length,
@@ -263,7 +225,7 @@ class SeedAgent {
         }
         const active = this.seeds.filter(s => s.status === 'planted');
         const harvested = this.seeds.filter(s => s.status === 'harvested');
-        const byType = {};
+        const byType: Record<string, number> = {};
         for (const s of this.seeds) byType[s.type] = (byType[s.type] || 0) + 1;
         return {
             total: this.seeds.length, active: active.length, harvested: harvested.length,
@@ -271,9 +233,7 @@ class SeedAgent {
         };
     }
 
-    // --- Helpers ---
-
-    calculateExpiry(shelfLife) {
+    private calculateExpiry(shelfLife: string): string {
         const now = new Date();
         const match = shelfLife.match(/^(\d+)(h|d)$/);
         if (!match) return new Date(now.getTime() + 7 * 86400000).toISOString();
@@ -283,16 +243,15 @@ class SeedAgent {
         return new Date(now.getTime() + ms).toISOString();
     }
 
-    async _loadSeeds() {
-        if (isDbAvailable()) {
-            try {
-                return await db.select().from(seedsTable);
-            } catch { /* fallback */ }
+    private async _loadSeeds(): Promise<Seed[]> {
+        if (isDbAvailable() && db) {
+            try { return await db.select().from(seedsTable) as unknown as Seed[]; }
+            catch { /* fallback */ }
         }
         return this._loadFromFile();
     }
 
-    _loadFromFile() {
+    private _loadFromFile(): Seed[] {
         const seedFile = join(DATA_DIR, 'seeds.json');
         if (existsSync(seedFile)) {
             try { return JSON.parse(readFileSync(seedFile, 'utf8')); }
@@ -301,7 +260,7 @@ class SeedAgent {
         return [];
     }
 
-    _saveToFile() {
+    private _saveToFile(): void {
         if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
         writeFileSync(join(DATA_DIR, 'seeds.json'), JSON.stringify(this.seeds, null, 2));
     }
